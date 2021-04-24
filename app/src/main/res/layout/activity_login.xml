@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <ImageView
+        android:id="@+id/img_royalcarribean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign In"
+        android:textColor="@android:color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tv_email"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/et_email"
+        android:text="Email:"
+        android:textSize="15dp"
+        android:layout_marginTop="16dp"
+        />
+    <EditText
+        android:id="@+id/et_email"
+        android:layout_width="@android:dimen/thumbnail_height"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/tv_password"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        android:hint="email"
+
+        />
+    <TextView
+        android:id="@+id/tv_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_centerInParent="true"
+        android:text="Password:"
+        android:textSize="15dp"
+        />
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_below="@+id/tv_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:hint="password"
+        android:singleLine="true"
+        android:inputType="textPassword"
+        android:layout_alignStart="@+id/et_email"
+        android:layout_alignEnd="@id/et_email"
+        />
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log In"
+        android:layout_below="@+id/et_password"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/white"
+        android:background="@android:color/holo_blue_dark"
+        />
+    <TextView
+        android:id="@+id/tv_donthaveyet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Don't have an account?"
+        android:layout_below="@+id/btn_login"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_alignStart="@+id/et_password"
+        />
+    <TextView
+        android:id="@+id/tv_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Up Here"
+        android:layout_toEndOf="@+id/tv_donthaveyet"
+        android:textColor="@android:color/holo_blue_light"
+        android:layout_alignBaseline="@+id/tv_donthaveyet"
+        />
+    <TextView
+        android:id="@+id/tv_forgotpassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/tv_donthaveyet"
+        android:textColor="@android:color/holo_blue_light"
+        />
+</RelativeLayout>

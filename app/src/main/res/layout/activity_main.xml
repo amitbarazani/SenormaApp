@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/img_royalcarribean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/logo" />
+    <Button
+        android:id="@+id/btn_loginCustomers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log in customers"
+        android:layout_centerInParent="true"
+
+        />
+    <Button
+        android:id="@+id/btn_loginAgents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log in agents"
+        android:layout_below="@+id/btn_loginCustomers"
+        android:layout_alignStart="@+id/btn_loginCustomers"
+        android:layout_alignEnd="@+id/btn_loginCustomers"
+        />
+    <Button
+        android:id="@+id/btn_contactUs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="contact us"
+        android:layout_below="@+id/btn_loginAgents"
+        android:layout_alignStart="@+id/btn_loginCustomers"
+        android:layout_alignEnd="@+id/btn_loginCustomers"
+        />
+    <TextView
+        android:id="@+id/tv_donthaveyet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="dont have a cruise yet?"
+        android:layout_below="@+id/btn_contactUs"
+        android:layout_marginTop="16dp"
+        android:layout_centerInParent="true"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/tv_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click Here To Check All Your Options!"
+        android:layout_below="@+id/tv_donthaveyet"
+        android:layout_centerInParent="true"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        />
+
+
+
+
+</RelativeLayout>
