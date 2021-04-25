@@ -89,8 +89,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             FirebaseDatabase db = FirebaseDatabase.getInstance();
-
                             Toast.makeText(LoginActivity.this, "welcome "+user.getEmail(), Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
