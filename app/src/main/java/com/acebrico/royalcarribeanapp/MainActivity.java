@@ -33,10 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(view == btn_loginAgents)
         {
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            intent.putExtra("role","Agent");
             startActivity(intent);
         }else if(view == btn_loginCustomers)
         {
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            intent.putExtra("role","Client");
             startActivity(intent);
         }else if(view == btn_contactus)
         {

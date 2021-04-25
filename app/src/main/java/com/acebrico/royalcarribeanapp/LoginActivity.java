@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -26,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     ImageView img_royalcarribean;
     Button btn_login;
     EditText et_email,et_password;
+    TextView tv_signup;
 
     //firebase
     FirebaseAuth mAuth;
@@ -38,11 +41,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btn_login = findViewById(R.id.btn_login);
         et_email = findViewById(R.id.et_email);
         et_password = findViewById(R.id.et_password);
-
+        tv_signup = findViewById(R.id.tv_signup);
 
 
         btn_login.setOnClickListener(this);
         img_royalcarribean.setOnClickListener(this);
+        tv_signup.setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -63,8 +67,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             {
                 signIn(et_email.getText().toString(),et_password.getText().toString());
             }else{
-                Toast.makeText(this, "לא מילאתם את כל השדות", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "you didn't fill all of the fields...", Toast.LENGTH_SHORT).show();
             }
+        }else if(view == tv_signup)
+        {
+            Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
+            intent.putExtra("role",getIntent().getExtras().getString("role"));
+            startActivity(intent);
         }
     }
 
@@ -78,29 +87,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "ברוך הבא "+user.getEmail(), Toast.LENGTH_LONG).show();
 
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            db.collection("users").document(mAuth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful())
-                                    {
-                                        Log.d(TAG, "doc snap:"+task.getResult());
-                                        Log.d(TAG, "doc snap username:"+task.getResult().get("username"));
-                                        DocumentSnapshot documentSnapshot = task.getResult();
-                                        String username = documentSnapshot.get("username").toString();
-                                        //^^^^^^^?????what to do with username???????
-                                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
-                            });
+                            FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+                            Toast.makeText(LoginActivity.this, "welcome "+user.getEmail(), Toast.LENGTH_LONG).show();
 
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "האימייל או הסיסמא לא נכונים",
+                            Toast.makeText(LoginActivity.this, "email or password isn't correct...",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

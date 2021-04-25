@@ -44,6 +44,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         et_fullname = findViewById(R.id.et_fullname);
         role = getIntent().getExtras().getString("role");
 
+        mAuth = FirebaseAuth.getInstance();
 
         btn_signUp.setOnClickListener(this);
         img_royalcarribean.setOnClickListener(this);
@@ -117,10 +118,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        User user = new User(email,fullname,ID,password,role);
+                        User user = new User(email,fullname,ID,password,role,"No");
                         FirebaseDatabase db = FirebaseDatabase.getInstance();
                         //updating user in firebase database
-                        db.getReference("Clients/").child(ID).setValue(user);
+                        db.getReference(role+"s/").child(ID).setValue(user);
 
                         Log.d("TAG", "createUserWithEmail:success");
                         Toast.makeText(SignUpActivity.this, "SignUp worked!",
