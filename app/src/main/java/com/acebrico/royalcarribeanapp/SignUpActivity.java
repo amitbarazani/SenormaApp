@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -30,6 +31,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     Button btn_signUp;
     //firebase
     FirebaseAuth mAuth;
+    String role;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         et_password = findViewById(R.id.et_password);
         et_id = findViewById(R.id.et_id);
         et_fullname = findViewById(R.id.et_fullname);
+        role = getIntent().getExtras().getString("role");
 
 
         btn_signUp.setOnClickListener(this);
@@ -104,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
 
 
-    public void signUp(final String email, String password,String ID,String fullname)
+    public void signUp(final String email, final String password, final String ID, final String fullname)
     {
 
         //prg.setVisibility(View.VISIBLE);
@@ -114,31 +117,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+                        User user = new User(email,fullname,ID,password,role);
+                        FirebaseDatabase db = FirebaseDatabase.getInstance();
+                        //updating user in firebase database
+                        db.getReference("Clients/").child(ID).setValue(user);
 
-                        /*
-                        SignIn tempuserToMap = (SignUp) tempuser;
-                        tempuserToMap.email = email;
-
-                         */
-
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        // יצירת משתמש בפיירבייס פיירסטור
-
-                        db.collection("users").document(mAuth.getCurrentUser().getUid())
-                                .set(tempuserToMap)
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w("TAG", "onFailure: ",e );
-                                        Toast.makeText(SignUpActivity.this, "There was a problem saving data to the server...", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-
-
-                        // Sign in success, update UI with the signed-in user's information
                         Log.d("TAG", "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(SignUpActivity.this, "SignUp worked!",
                                 Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
@@ -146,14 +130,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         finish();
                     }
 
-
-                    // ...
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                // If sign in fails, display a message to the user.
                 Log.w("TAG", "createUserWithEmail:failure", e);
                 Toast.makeText(SignUpActivity.this, "Sign up didn't work...",
                         Toast.LENGTH_SHORT).show();
