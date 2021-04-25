@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/img_royalcarribean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/logo" />
+    <Button
+        android:id="@+id/btn_personalinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Personal Information"
+        android:layout_below="@+id/img_royalcarribean"
+        android:layout_centerHorizontal="true"
+        android:padding="16sp"
+        />
+    <Button
+        android:id="@+id/btn_tripPlanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trip Planner"
+        android:layout_below="@+id/btn_personalinfo"
+        android:layout_alignStart="@+id/btn_personalinfo"
+        android:layout_alignEnd="@+id/btn_personalinfo"
+        android:padding="16sp"
+        />
+    <Button
+        android:id="@+id/btn_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat"
+        android:layout_below="@+id/btn_tripPlanner"
+        android:layout_alignStart="@+id/btn_personalinfo"
+        android:layout_alignEnd="@+id/btn_personalinfo"
+        android:padding="16sp"
+        />
+    <Button
+        android:id="@+id/btn_signout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out ..."
+        android:layout_below="@+id/btn_chat"
+        android:layout_alignStart="@+id/btn_personalinfo"
+        android:layout_alignEnd="@+id/btn_personalinfo"
+        android:padding="16sp"
+        />
+</RelativeLayout>

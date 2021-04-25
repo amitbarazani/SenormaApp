@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/img_royalcarribean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/logo" />
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/img_royalcarribean"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email:"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/tv_name"
+        android:layout_margin="16dp"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/tv_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID number:"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/tv_email"
+        android:layout_centerHorizontal="true"
+        />
+    <TableLayout
+        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_id"
+
+        >
+        <TableRow
+            android:divider="@android:color/black"
+            android:showDividers="middle"
+
+            >
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_column="0"
+                android:text="Reservation Number"
+                android:padding="16dp"/>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_column="1"
+                android:text="Status"
+                android:padding="16dp"/>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_column="2"
+                android:text="Agent"
+                android:padding="16dp"/>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_column="2"
+                android:text="Agent Email"
+
+                android:padding="16dp"/>
+        </TableRow>
+
+    </TableLayout>
+</RelativeLayout>
