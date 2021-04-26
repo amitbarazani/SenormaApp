@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -119,6 +120,18 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         User user = new User(email,fullname,ID,password,role,"No");
+
+                        SharedPreferences sp = getSharedPreferences("user",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.clear().apply();
+                        editor.putString("fullName",fullname);
+                        editor.putString("email", email);
+                        editor.putString("idNumber", ID);
+                        editor.putString("Online", "No");
+                        editor.putString("password", password);
+                        editor.putString("role", role);
+                        editor.commit();
+
                         FirebaseDatabase db = FirebaseDatabase.getInstance();
                         //updating user in firebase database
                         db.getReference(role+"s/").child(ID).setValue(user);
@@ -126,8 +139,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         Log.d("TAG", "createUserWithEmail:success");
                         Toast.makeText(SignUpActivity.this, "SignUp worked!",
                                 Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        if(role.equals("Client")) {
+                            startActivity(new Intent(SignUpActivity.this, MenuClientActivity.class));
+                        }else{
+                            startActivity(new Intent(SignUpActivity.this, MenuAgentActivity.class));
+                        }
                         finish();
                     }
 

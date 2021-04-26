@@ -1,10 +1,13 @@
 package com.acebrico.royalcarribeanapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +21,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -77,7 +83,50 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            Log.d(TAG, "snapshot:"+snapshot.toString());
+            User user = snapshot.getValue(User.class);
+            SharedPreferences sp = getSharedPreferences("user",MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.clear().apply();
+            editor.putString("fullName", user.fullname);
+            editor.putString("email", user.email);
+            editor.putString("idNumber", user.idNumber);
+            editor.putString("Online", user.online);
+            editor.putString("password", user.password);
+            editor.putString("role", user.role);
+            editor.commit();
+            Toast.makeText(LoginActivity.this,
+                    "welcome "+user.fullname, Toast.LENGTH_LONG).show();
+            if(getIntent().getExtras().getString("role").equals("Client")) {
+                startActivity(new Intent(LoginActivity.this, MenuClientActivity.class));
+            }else{
+                startActivity(new Intent(LoginActivity.this, MenuAgentActivity.class));
+            }
+        }
 
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
     private void signIn(String email,String password)
     {
         mAuth.signInWithEmailAndPassword(email, password)
@@ -86,11 +135,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
+                            final FirebaseUser currentUser = mAuth.getCurrentUser();
+                            User user = new User();
                             FirebaseDatabase db = FirebaseDatabase.getInstance();
-                            Toast.makeText(LoginActivity.this, "welcome "+user.getEmail(), Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+
+                            db.getReference(getIntent().getExtras().getString("role")+"s/").orderByChild("email")
+                                    .equalTo(currentUser.getEmail()).limitToFirst(1).addChildEventListener(childEventListener);
+
+
+                                    /*.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                    Log.d(TAG, "test:"+task);
+                                    Log.d(TAG, "test2:"+task.getResult());
+                                    DataSnapshot dataSnapshot = task.getResult();
+                                    if(task.isSuccessful())
+                                    {
+
+                                    }
+                                }
+                            });
+
+                                     */
+
+
 
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());

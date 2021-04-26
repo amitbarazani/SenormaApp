@@ -3,20 +3,39 @@ package com.acebrico.royalcarribeanapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btn_loginAgents,btn_contactus,btn_loginCustomers;
+    FirebaseAuth mAuth;
     TextView tv_options;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //
+        mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null)
+        {
+            SharedPreferences sp = getSharedPreferences("user",MODE_PRIVATE);
+            if(sp.getString("role","").equals("Client"))
+            {
+                startActivity(new Intent(MainActivity.this,MenuClientActivity.class));
+            }else{
+                startActivity(new Intent(MainActivity.this,MenuAgentActivity.class));
+            }
+            finish();
+        }
+        //
         btn_loginAgents = findViewById(R.id.btn_loginAgents);
         btn_loginCustomers = findViewById(R.id.btn_loginCustomers);
         btn_contactus = findViewById(R.id.btn_contactUs);
