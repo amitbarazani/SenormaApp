@@ -29,11 +29,13 @@ public class MenuClientActivity extends AppCompatActivity implements View.OnClic
         //
         btn_personalinfo = findViewById(R.id.btn_personalinfo);
         btn_signOut = findViewById(R.id.btn_signout);
+
         //
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         getUserDetails();
         //
+        btn_signOut.setText("Sign out "+user.fullName);
         btn_personalinfo.setOnClickListener(this);
         btn_signOut.setOnClickListener(this);
     }
@@ -48,9 +50,9 @@ public class MenuClientActivity extends AppCompatActivity implements View.OnClic
         sp = getSharedPreferences("user", Context.MODE_PRIVATE);
         if(currentUser != null)
         {
-            user.fullname = sp.getString("fullname","");
+            user.fullName = sp.getString("fullName","");
             user.email = sp.getString("email","");
-            user.online = sp.getString("online","");
+            user.Online = sp.getString("Online","");
             user.password = sp.getString("password","");
             user.role = sp.getString("role","");
             user.idNumber = sp.getString("idNumber","");

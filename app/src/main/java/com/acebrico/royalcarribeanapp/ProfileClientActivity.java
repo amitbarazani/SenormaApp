@@ -82,7 +82,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
         //
         tv_id.setText("ID number:"+user.idNumber);
         tv_email.setText("Email:"+user.email);
-        tv_name.setText("Name:"+user.fullname);
+        tv_name.setText("Name:"+user.fullName);
         //
         img_royalcarribean.setOnClickListener(this);
 
@@ -107,9 +107,9 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
         sp = getSharedPreferences("user", Context.MODE_PRIVATE);
         if(currentUser != null)
         {
-            user.fullname = sp.getString("fullName","");
+            user.fullName = sp.getString("fullName","");
             user.email = sp.getString("email","");
-            user.online = sp.getString("Online","");
+            user.Online = sp.getString("Online","");
             user.password = sp.getString("password","");
             user.role = sp.getString("role","");
             user.idNumber = sp.getString("idNumber","");
