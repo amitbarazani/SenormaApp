@@ -91,15 +91,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             SharedPreferences sp = getSharedPreferences("user",MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
             editor.clear().apply();
-            editor.putString("fullName", user.fullname);
+            editor.putString("fullName", user.fullName);
             editor.putString("email", user.email);
             editor.putString("idNumber", user.idNumber);
-            editor.putString("Online", user.online);
+            editor.putString("Online", user.Online);
             editor.putString("password", user.password);
             editor.putString("role", user.role);
             editor.commit();
             Toast.makeText(LoginActivity.this,
-                    "welcome "+user.fullname, Toast.LENGTH_LONG).show();
+                    "welcome "+user.fullName, Toast.LENGTH_LONG).show();
             if(getIntent().getExtras().getString("role").equals("Client")) {
                 startActivity(new Intent(LoginActivity.this, MenuClientActivity.class));
             }else{
