@@ -1,29 +1,27 @@
 package com.acebrico.royalcarribeanapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -63,22 +61,9 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
         getUserDetails();
         //
         reservations = new ArrayList<>();
-        db.getReference("Reservations/").orderByChild("idClient").equalTo(user.idNumber).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                prg_profileClient.setVisibility(View.GONE);
-                tv_email.setVisibility(View.VISIBLE);
-                tv_id.setVisibility(View.VISIBLE);
-                tv_name.setVisibility(View.VISIBLE);
-                tbl_reservations.setVisibility(View.GONE);
-                if(task.isSuccessful()) {
-                    DataSnapshot dataSnapshot = task.getResult();
-                    showReservations(dataSnapshot);
-                }else{
-                    Toast.makeText(ProfileClientActivity.this, "there was a problem loading your reservations...", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        db.getReference("Reservations/").orderByChild("idClient").equalTo(user.idNumber).addChildEventListener(reservationListener);
+        //^close the listener
+
         //
         tv_id.setText("ID number:"+user.idNumber);
         tv_email.setText("Email:"+user.email);
@@ -87,11 +72,72 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
         img_royalcarribean.setOnClickListener(this);
 
     }
-    public void showReservations(DataSnapshot dataSnapshot)
+
+    private ChildEventListener reservationListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            if(snapshot.exists())
+            {
+                prg_profileClient.setVisibility(View.GONE);
+                tv_email.setVisibility(View.VISIBLE);
+                tv_id.setVisibility(View.VISIBLE);
+                tv_name.setVisibility(View.VISIBLE);
+                tbl_reservations.setVisibility(View.VISIBLE);
+                showReservation(snapshot);
+            }
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
+    Integer counter = 1;
+    public void showReservation(DataSnapshot dataSnapshot)
     {
         if(dataSnapshot.exists())
         {
-            Log.d("TAG", "showReservations: "+dataSnapshot.getValue());
+            //Log.d("TAG", "showReservations: "+dataSnapshot.getValue());
+            Reservation tempReservation =dataSnapshot.getValue(Reservation.class);
+            //Log.d("TAG", "temp reservation:"+tempReservation.toString());
+            TableRow reservationRow = new TableRow(ProfileClientActivity.this);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+            reservationRow.setLayoutParams(lp);
+
+            TextView tvRow_reservationNumber = new TextView(this);
+            tvRow_reservationNumber.setText(tempReservation.ReservationNumber);
+            TextView tvRow_status = new TextView(this);
+            tvRow_status.setText(tempReservation.Status);
+            TextView tvRow_agent = new TextView(this);
+            tvRow_agent.setText(tempReservation.Agent);
+            TextView tvRow_agentEmail = new TextView(this);
+            tvRow_agentEmail.setText(tempReservation.AgentEmail);
+
+
+            reservationRow.addView(tvRow_reservationNumber);
+            reservationRow.addView(tvRow_status);
+            reservationRow.addView(tvRow_agent);
+            reservationRow.addView(tvRow_agentEmail);
+
+            tbl_reservations.addView(reservationRow,counter);
+            counter++;
+
         }else{
             Toast.makeText(ProfileClientActivity.this, "there are no reservations...", Toast.LENGTH_SHORT).show();
         }

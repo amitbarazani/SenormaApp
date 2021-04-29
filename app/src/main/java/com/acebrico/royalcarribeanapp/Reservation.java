@@ -9,7 +9,7 @@ public class Reservation {
     public String departsAt;
     public String departsFrom;
     public String fullName;
-    public String IDAgent;
+    public Integer IDAgent;
     public String idClient;
     public String numberNights;
     public String Price;
@@ -20,7 +20,8 @@ public class Reservation {
     public String stopPlace;
     public String stopTime;
 
-    public Reservation(String agent, String agentEmail, String arriveAt, String arriveTo, String clientEmail, String departsAt, String departsFrom, String fullName, String IDAgent, String idClient, String numberNights, String price, String reservationNumber, String roomCategory, String ship, String status, String stopPlace, String stopTime) {
+    /*
+    public Reservation(String agent, String agentEmail, String arriveAt, String arriveTo, String clientEmail, String departsAt, String departsFrom, String fullName, Integer IDAgent, String idClient, String numberNights, String price, Integer reservationNumber, String roomCategory, String ship, String status, String stopPlace, String stopTime) {
         Agent = agent;
         AgentEmail = agentEmail;
         ArriveAt = arriveAt;
@@ -40,6 +41,32 @@ public class Reservation {
         this.stopPlace = stopPlace;
         this.stopTime = stopTime;
     }
+
+     */
+
     public Reservation(){}
 
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "Agent='" + Agent + '\'' +
+                ", AgentEmail='" + AgentEmail + '\'' +
+                ", ArriveAt='" + ArriveAt + '\'' +
+                ", ArriveTo='" + ArriveTo + '\'' +
+                ", ClientEmail='" + ClientEmail + '\'' +
+                ", departsAt='" + departsAt + '\'' +
+                ", departsFrom='" + departsFrom + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", IDAgent=" + IDAgent +
+                ", idClient='" + idClient + '\'' +
+                ", numberNights='" + numberNights + '\'' +
+                ", Price='" + Price + '\'' +
+                ", ReservationNumber='" + ReservationNumber + '\'' +
+                ", roomCategory='" + roomCategory + '\'' +
+                ", ship='" + ship + '\'' +
+                ", Status='" + Status + '\'' +
+                ", stopPlace='" + stopPlace + '\'' +
+                ", stopTime='" + stopTime + '\'' +
+                '}';
+    }
 }
