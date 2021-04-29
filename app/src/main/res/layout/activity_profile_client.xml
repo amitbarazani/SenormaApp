@@ -56,38 +56,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_id"
-
+        android:divider="@android:color/black"
+        android:showDividers="middle"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
         >
+
         <TableRow
-            android:divider="@android:color/black"
-            android:showDividers="middle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-            >
+          >
+
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_column="0"
-                android:text="Reservation Number"
-                android:padding="16dp"/>
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_column="1"
-                android:text="Status"
-                android:padding="16dp"/>
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_column="2"
-                android:text="Agent"
-                android:padding="16dp"/>
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_column="2"
-                android:text="Agent Email"
 
-                android:padding="16dp"/>
+                android:text="Reservation \nNumber"
+                android:textAlignment="textStart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:padding="16dp"
+                android:text="Status"
+                 />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:padding="16dp"
+                android:text="Agent"
+              />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:text="Agent Email"
+                />
         </TableRow>
 
     </TableLayout>

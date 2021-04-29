@@ -7,9 +7,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -122,10 +125,18 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
 
             TextView tvRow_reservationNumber = new TextView(this);
             tvRow_reservationNumber.setText(tempReservation.ReservationNumber);
+            tvRow_reservationNumber.setPadding(16,0,16,0);
+            tvRow_reservationNumber.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+
             TextView tvRow_status = new TextView(this);
             tvRow_status.setText(tempReservation.Status);
+            tvRow_status.setPadding(16,16,16,16);
+
             TextView tvRow_agent = new TextView(this);
             tvRow_agent.setText(tempReservation.Agent);
+            tvRow_agent.setPadding(16,16,16,16);
+
+
             TextView tvRow_agentEmail = new TextView(this);
             tvRow_agentEmail.setText(tempReservation.AgentEmail);
 
@@ -134,6 +145,9 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
             reservationRow.addView(tvRow_status);
             reservationRow.addView(tvRow_agent);
             reservationRow.addView(tvRow_agentEmail);
+            //reservationRow.setDividerDrawable(new ColorDrawable(Color.BLACK));
+            //reservationRow.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+            reservationRow.setPadding(0,20,0,20);
 
             tbl_reservations.addView(reservationRow,counter);
             counter++;
