@@ -67,10 +67,9 @@ public class MenuClientActivity extends AppCompatActivity implements View.OnClic
             startActivity(new Intent(MenuClientActivity.this,ProfileClientActivity.class));
         }else if(view == btn_signOut)
         {
-            startActivity(new Intent(MenuClientActivity.this,MainActivity.class));
             mAuth.signOut();
             sp.edit().clear().apply();
-
+            startActivity(new Intent(MenuClientActivity.this,MainActivity.class));
         }
     }
 }

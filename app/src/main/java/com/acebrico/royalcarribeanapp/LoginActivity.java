@@ -86,6 +86,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            db.getReference(getIntent().getExtras().getString("role")+"s/").removeEventListener(childEventListener);
+
             Log.d(TAG, "snapshot:"+snapshot.toString());
             User user = snapshot.getValue(User.class);
             SharedPreferences sp = getSharedPreferences("user",MODE_PRIVATE);
@@ -127,6 +129,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
     };
+
+    FirebaseDatabase db;
+
+
     private void signIn(String email,String password)
     {
         mAuth.signInWithEmailAndPassword(email, password)
@@ -137,8 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.d(TAG, "signInWithEmail:success");
                             final FirebaseUser currentUser = mAuth.getCurrentUser();
                             User user = new User();
-                            FirebaseDatabase db = FirebaseDatabase.getInstance();
-
+                            db = FirebaseDatabase.getInstance();
                             db.getReference(getIntent().getExtras().getString("role")+"s/").orderByChild("email")
                                     .equalTo(currentUser.getEmail()).limitToFirst(1).addChildEventListener(childEventListener);
 
