@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProfileClientActivity"></activity>
+        <activity android:name=".ChatClientActivity"></activity>
+        <activity android:name=".ProfileClientActivity" />
         <activity android:name=".MenuAgentActivity" />
         <activity android:name=".MenuClientActivity" />
         <activity android:name=".ContactUsActivity" />
