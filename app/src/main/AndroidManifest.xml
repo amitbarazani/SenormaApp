@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ChatAgentActivity"></activity>
         <activity android:name=".ProfileAgentActivity" />
-        <activity android:name=".TripPlannerClient" />
+        <activity android:name=".TripPlannerClientActivity" />
         <activity android:name=".ChatClientActivity" />
         <activity android:name=".ProfileClientActivity" />
         <activity android:name=".MenuAgentActivity" />
