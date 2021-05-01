@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -122,6 +124,8 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
             TableRow reservationRow = new TableRow(ProfileClientActivity.this);
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
             reservationRow.setLayoutParams(lp);
+
+
 
             TextView tvRow_reservationNumber = new TextView(this);
             tvRow_reservationNumber.setText(tempReservation.ReservationNumber);
