@@ -96,6 +96,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_column="3"
+
                 android:padding="16dp"
                 android:text="Agent"
               />
@@ -103,7 +105,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="3"
+                android:layout_column="4"
+
                 android:text="Agent Email"
                 />
         </TableRow>

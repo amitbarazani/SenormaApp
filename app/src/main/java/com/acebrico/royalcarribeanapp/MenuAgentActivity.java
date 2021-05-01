@@ -38,7 +38,7 @@ public class MenuAgentActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         if(view == btn_chat)
         {
-            //startActivity(new Intent(MenuAgentActivity.this));
+            startActivity(new Intent(MenuAgentActivity.this,ChatAgentActivity.class));
         }else if(view == btn_signout)
         {
             FirebaseAuth.getInstance().signOut();
@@ -49,7 +49,7 @@ public class MenuAgentActivity extends AppCompatActivity implements View.OnClick
 
         }else if(view == btn_profile)
         {
-
+            startActivity(new Intent(MenuAgentActivity.this,ProfileAgentActivity.class));
         }
     }
 

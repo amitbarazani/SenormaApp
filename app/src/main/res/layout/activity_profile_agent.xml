@@ -51,6 +51,16 @@
         android:layout_below="@+id/tv_email"
         android:layout_centerHorizontal="true"
         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Customers"
+        android:layout_below="@id/tv_id"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:textSize="24dp"
+        />
     <TableLayout
         android:id="@+id/tbl_reservations"
         android:layout_marginTop="32dp"
@@ -98,14 +108,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Agent"
+                android:layout_column="3"
+
+                android:text="Client"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:text="Agent Email"
+                android:layout_column="4"
+
+                android:text="Client Email"
                 />
         </TableRow>
 
