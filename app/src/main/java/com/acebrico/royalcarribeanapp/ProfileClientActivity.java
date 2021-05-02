@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -127,6 +128,8 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
             TableRow reservationRow = new TableRow(ProfileClientActivity.this);
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
             reservationRow.setLayoutParams(lp);
+           // reservationRow.setHorizontalScrollBarEnabled(false);
+           // reservationRow.setVerticalScrollBarEnabled(true);
 
 
             /*
@@ -159,6 +162,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
 
             ImageView img_moreDetails = new ImageView(this);
             img_moreDetails.setImageDrawable(getDrawable(R.drawable.help));
+            //img_moreDetails.setLayoutParams(new TableRow.LayoutParams(32,32));
             //img_moreDetails.setLayoutParams(new );
             img_moreDetails.setAdjustViewBounds(true);
             img_moreDetails.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -190,7 +194,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
            // reservationRow.addView(expandableListView);
            // reservationRow.addView(btn_expand);
 
-            reservationRow.addView(img_moreDetails,lp);
+            reservationRow.addView(img_moreDetails,new TableRow.LayoutParams(120,120));
             reservationRow.addView(tvRow_reservationNumber);
             reservationRow.addView(tvRow_status);
             reservationRow.addView(tvRow_agent);

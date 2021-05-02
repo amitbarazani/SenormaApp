@@ -103,8 +103,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(LoginActivity.this,
                     "welcome "+user.fullName, Toast.LENGTH_LONG).show();
             if(getIntent().getExtras().getString("role").equals("Client")) {
+                finishAffinity();
                 startActivity(new Intent(LoginActivity.this, MenuClientActivity.class));
             }else{
+                finishAffinity();
                 startActivity(new Intent(LoginActivity.this, MenuAgentActivity.class));
             }
         }
