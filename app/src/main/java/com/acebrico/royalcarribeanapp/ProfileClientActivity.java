@@ -333,4 +333,10 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
             startActivity(intent);
         }
     }
+
+    @Override
+    protected void onStop() {
+        db.getReference("Reservations/").orderByChild("idClient").equalTo(user.idNumber).removeEventListener(reservationListener);
+        super.onStop();
+    }
 }
