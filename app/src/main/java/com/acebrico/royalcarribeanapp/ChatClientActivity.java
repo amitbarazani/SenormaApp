@@ -3,13 +3,16 @@ package com.acebrico.royalcarribeanapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,13 +32,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 
 public class ChatClientActivity extends AppCompatActivity implements View.OnClickListener {
+    private final int PICK_IMAGE_REQUEST = 22;
+    private Uri filePath;
+
+
     ImageView img_royalcarribean,img_profilePic;
     RelativeLayout rl_chatScreen,rl_pickScreen;
     Button btn_sendMessage,btn_changePic;
@@ -47,6 +57,8 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseDatabase db;
+    StorageReference storageReference;
+
     //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +141,14 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
                 tv_picFilename.setVisibility(View.VISIBLE);
             }
         }else if(view == btn_changePic){
-
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(
+                    Intent.createChooser(
+                            intent,
+                            "Select Image from here..."),
+                    PICK_IMAGE_REQUEST);
         }
     }
 
@@ -149,6 +168,91 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
             user.role = sp.getString("role","");
             user.idNumber = sp.getString("idNumber","");
             Log.d("TAG", "getUserDetails: "+user.toString());
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode,
+                                    int resultCode,
+                                    Intent data)
+    {
+
+        super.onActivityResult(requestCode,
+                resultCode,
+                data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                img_profilePic.setImageBitmap(bitmap);
+                uploadImage();
+            }
+
+            catch (IOException e) {
+                // Log the exception
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    // UploadImage method
+    private void uploadImage()
+    {
+        if (filePath != null) {
+
+            // Code for showing progressDialog while uploading
+            final ProgressDialog progressDialog
+                    = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            // Defining the child of storageReference
+            storageReference =firebaseStorage.getReference();
+            StorageReference ref = storageReference.child("images/" + user.idNumber+".jpg");
+
+            // adding listeners on upload
+            // or failure of image
+            ref.putFile(filePath)
+                    .addOnSuccessListener(
+                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                                {
+
+                                    // Image uploaded successfully
+                                    // Dismiss dialog
+                                    progressDialog.dismiss();
+                                    Toast.makeText(ChatClientActivity.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e)
+                        {
+
+                            // Error, Image not uploaded
+                            progressDialog.dismiss();
+                            Toast.makeText(ChatClientActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(
+                            new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+                                // Progress Listener for loading
+                                // percentage on the dialog box
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot)
+                                {
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                                    progressDialog.setMessage("Uploaded " + (int)progress + "%");
+                                }
+                            });
         }
     }
 

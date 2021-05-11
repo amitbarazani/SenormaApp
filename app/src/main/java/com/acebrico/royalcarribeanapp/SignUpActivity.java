@@ -100,7 +100,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
      */
 
     public static boolean isValidPassword(String password) {
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{6,}$")) {
+        if (!password.matches("^(?=.*[0-9])(?=\\S+$).{6,}$")) {
             return false;
         } else {
             return true;
