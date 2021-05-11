@@ -1,9 +1,16 @@
 package com.acebrico.royalcarribeanapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,9 +20,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
+
 
 public class ChatClientActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView img_royalcarribean,img_profilePic;
@@ -25,7 +43,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     ListView lv_messages,lv_chat;
     TextView tv_name,tv_talkingWith,tv_picFilename;
     //
-    
+    FirebaseStorage firebaseStorage;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseDatabase db;
@@ -50,6 +68,32 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         mAuth = FirebaseAuth.getInstance();
         currentUser= mAuth.getCurrentUser();
         db = FirebaseDatabase.getInstance();
+        firebaseStorage =FirebaseStorage.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        //
+        getUserDetails();
+        //
+        tv_name.setText(user.fullName);
+        Log.d("TAG", "user id:"+user.idNumber);
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://senorma-64974.appspot.com").child("images/").child(user.idNumber+".jpg");
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    img_profilePic.setImageBitmap(bitmap);
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("TAG", "onFailure:"+exception);
+                }
+            });
+        } catch (IOException e ) {}
+
+
         if(currentUser == null)
         {
             Toast.makeText(this, "You are not connected to an account!", Toast.LENGTH_SHORT).show();
@@ -88,4 +132,24 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
 
         }
     }
+
+
+    SharedPreferences sp;
+    User user;
+    public void getUserDetails()
+    {
+        user = new User();
+        sp = getSharedPreferences("user", Context.MODE_PRIVATE);
+        if(currentUser != null)
+        {
+            user.fullName = sp.getString("fullName","");
+            user.email = sp.getString("email","");
+            user.Online = sp.getString("Online","");
+            user.password = sp.getString("password","");
+            user.role = sp.getString("role","");
+            user.idNumber = sp.getString("idNumber","");
+            Log.d("TAG", "getUserDetails: "+user.toString());
+        }
+    }
+
 }
