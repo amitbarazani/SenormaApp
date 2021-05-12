@@ -5,21 +5,39 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:ignore="MissingDefaultResource">
     <ImageView
-        android:id="@+id/img_isOnline"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_toLeftOf="@+id/tv_name"
-        android:layout_centerInParent="true"
-        android:src="@drawable/red_circle"
-        android:layout_margin="5dp"
+        android:id="@+id/img_profilePic"
+        android:layout_width="45dp"
+        android:layout_height="70dp"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/person"
         />
     <TextView
-        android:id="@+id/tv_name"
+        android:id="@+id/tv_senderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="name.."
         android:textColor="@android:color/black"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true"
         />
+    <TextView
+        android:id="@+id/tv_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="when sent.."
+        android:textSize="12sp"
+        android:layout_alignBaseline="@+id/tv_senderName"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/tv_senderName"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_senderName"
+        android:layout_centerHorizontal="true"
+        android:text="content..."
+        android:textColor="@android:color/black" />
 </RelativeLayout>

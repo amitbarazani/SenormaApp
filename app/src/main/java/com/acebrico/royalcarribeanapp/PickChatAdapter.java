@@ -23,7 +23,7 @@ public class PickChatAdapter extends ArrayAdapter<User>
 
 
     public PickChatAdapter(ArrayList<User> data, Context context) {
-        super(context, R.layout.item_person_chat, data);
+        super(context, R.layout.item_pick_chat, data);
         this.users = data;
         this.mContext=context;
 
@@ -46,7 +46,7 @@ public class PickChatAdapter extends ArrayAdapter<User>
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.item_person_chat, parent, false);
+            convertView = inflater.inflate(R.layout.item_pick_chat, parent, false);
             result=convertView;
         }
 

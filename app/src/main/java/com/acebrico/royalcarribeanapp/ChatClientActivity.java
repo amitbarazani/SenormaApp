@@ -47,7 +47,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     private Uri filePath;
 
 
-    ImageView img_royalcarribean,img_profilePic;
+    ImageView img_royalcarribean,img_profilePic,img_backToPickScreen;
     RelativeLayout rl_chatScreen,rl_pickScreen;
     Button btn_sendMessage,btn_changePic;
     EditText et_message;
@@ -67,6 +67,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_chat_client);
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
         img_profilePic = findViewById(R.id.img_profilePic);
+        img_backToPickScreen = findViewById(R.id.img_back);
         btn_sendMessage = findViewById(R.id.btn_sendMessage);
         btn_changePic = findViewById(R.id.btn_changePic);
         rl_chatScreen = findViewById(R.id.rl_chatScreen);
@@ -104,6 +105,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         btn_changePic.setOnClickListener(this);
         img_profilePic.setOnClickListener(this);
         img_royalcarribean.setOnClickListener(this);
+        img_backToPickScreen.setOnClickListener(this);
 
 
     }
@@ -207,6 +209,11 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
             startActivityForResult(
                     Intent.createChooser(intent, "Select Image from here..."),
                     PICK_IMAGE_REQUEST);
+        }else if(view == img_backToPickScreen)
+        {
+            rl_pickScreen.setVisibility(View.VISIBLE);
+            rl_chatScreen.setVisibility(View.GONE);
+
         }
     }
 
@@ -315,6 +322,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         rl_pickScreen.setVisibility(View.GONE);
         rl_chatScreen.setVisibility(View.VISIBLE);
         tv_talkingWith.setText(tappedUser.fullName);
+
 
 
     }
