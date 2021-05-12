@@ -9,12 +9,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -38,10 +39,10 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.ArrayList;
 
 
-public class ChatClientActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChatClientActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private final int PICK_IMAGE_REQUEST = 22;
     private Uri filePath;
 
@@ -55,7 +56,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     //
     FirebaseStorage firebaseStorage;
     FirebaseAuth mAuth;
-    FirebaseUser currentUser;
+    FirebaseUser currentUserAuth;
     FirebaseDatabase db;
     StorageReference storageReference;
 
@@ -78,35 +79,22 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         tv_picFilename = findViewById(R.id.tv_picFilename);
         //
         mAuth = FirebaseAuth.getInstance();
-        currentUser= mAuth.getCurrentUser();
+        currentUserAuth = mAuth.getCurrentUser();
         db = FirebaseDatabase.getInstance();
         firebaseStorage =FirebaseStorage.getInstance();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
         //
         getUserDetails();
         //
-        tv_name.setText(user.fullName);
-        Log.d("TAG", "user id:"+user.idNumber);
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://senorma-64974.appspot.com").child("images/").child(user.idNumber+".jpg");
-        try {
-            final File localFile = File.createTempFile("images", "jpg");
-            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    img_profilePic.setImageBitmap(bitmap);
+        tv_name.setText(currentUser.fullName);
+        Log.d("TAG", "user id:"+ currentUser.idNumber);
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Log.d("TAG", "onFailure:"+exception);
-                }
-            });
-        } catch (IOException e ) {}
-
-
-        if(currentUser == null)
+        //
+        progressPictureAndMessages  = new ProgressDialog(this);
+        progressPictureAndMessages.setTitle("Loading data...");
+        progressPictureAndMessages.show();
+        loadPicture();
+        //
+        if(currentUserAuth == null)
         {
             Toast.makeText(this, "You are not connected to an account!", Toast.LENGTH_SHORT).show();
         }
@@ -117,6 +105,78 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         img_profilePic.setOnClickListener(this);
         img_royalcarribean.setOnClickListener(this);
 
+
+    }
+
+    private void loadPicture()
+    {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://senorma-64974.appspot.com").child("images/").child(currentUser.idNumber+".jpg");
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    img_profilePic.setImageBitmap(bitmap);
+                    refreshPeople();
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("TAG", "onFailure:"+exception);
+                }
+            });
+        } catch (IOException e ) {}
+    }
+
+    ProgressDialog progressPictureAndMessages;
+    private ArrayList<User> users;
+
+    private void refreshPeople()
+    {
+        users = new ArrayList<>();
+        db.getReference("Clients/").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    for (DataSnapshot dataSnapshot: task.getResult().getChildren()) {
+                        if(dataSnapshot.exists()) {
+                            if(!dataSnapshot.getValue(User.class).fullName.equals(currentUser.fullName))
+                            {
+                                users.add(dataSnapshot.getValue(User.class));
+                            }
+                        }
+                    }
+                    db.getReference("Agents/").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            if(task.isSuccessful())
+                            {
+                                for (DataSnapshot dataSnapshot: task.getResult().getChildren()) {
+                                    if(dataSnapshot.exists()) {
+                                        users.add(dataSnapshot.getValue(User.class));
+                                    }
+                                }
+                                PickChatAdapter pickChatAdapter = new PickChatAdapter(users,ChatClientActivity.this);
+                                lv_messages.setAdapter(pickChatAdapter);
+                                lv_messages.setOnItemClickListener(ChatClientActivity.this);
+                                progressPictureAndMessages.dismiss();
+                                //Toast.makeText(ChatClientActivity.this, "loaded", Toast.LENGTH_SHORT).show();
+
+                            }else{
+                                progressPictureAndMessages.dismiss();
+                                Toast.makeText(ChatClientActivity.this, "there was a problem loading you data...", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -145,42 +205,36 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(
-                    Intent.createChooser(
-                            intent,
-                            "Select Image from here..."),
+                    Intent.createChooser(intent, "Select Image from here..."),
                     PICK_IMAGE_REQUEST);
         }
     }
 
 
     SharedPreferences sp;
-    User user;
+    User currentUser;
     public void getUserDetails()
     {
-        user = new User();
+        currentUser = new User();
         sp = getSharedPreferences("user", Context.MODE_PRIVATE);
-        if(currentUser != null)
+        if(currentUserAuth != null)
         {
-            user.fullName = sp.getString("fullName","");
-            user.email = sp.getString("email","");
-            user.Online = sp.getString("Online","");
-            user.password = sp.getString("password","");
-            user.role = sp.getString("role","");
-            user.idNumber = sp.getString("idNumber","");
-            Log.d("TAG", "getUserDetails: "+user.toString());
+            currentUser.fullName = sp.getString("fullName","");
+            currentUser.email = sp.getString("email","");
+            currentUser.Online = sp.getString("Online","");
+            currentUser.password = sp.getString("password","");
+            currentUser.role = sp.getString("role","");
+            currentUser.idNumber = sp.getString("idNumber","");
+            Log.d("TAG", "getUserDetails: "+ currentUser.toString());
         }
     }
 
 
     @Override
-    protected void onActivityResult(int requestCode,
-                                    int resultCode,
-                                    Intent data)
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
 
-        super.onActivityResult(requestCode,
-                resultCode,
-                data);
+        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
@@ -199,23 +253,21 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     }
 
 
+
+
     // UploadImage method
     private void uploadImage()
     {
         if (filePath != null) {
 
-            // Code for showing progressDialog while uploading
             final ProgressDialog progressDialog
                     = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            // Defining the child of storageReference
             storageReference =firebaseStorage.getReference();
-            StorageReference ref = storageReference.child("images/" + user.idNumber+".jpg");
+            StorageReference ref = storageReference.child("images/" + currentUser.idNumber+".jpg");
 
-            // adding listeners on upload
-            // or failure of image
             ref.putFile(filePath)
                     .addOnSuccessListener(
                             new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -256,4 +308,14 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        //Toast.makeText(this, "chosen:"+users.get(i).fullName, Toast.LENGTH_SHORT).show();
+        User tappedUser = users.get(i);
+        rl_pickScreen.setVisibility(View.GONE);
+        rl_chatScreen.setVisibility(View.VISIBLE);
+        tv_talkingWith.setText(tappedUser.fullName);
+
+
+    }
 }
