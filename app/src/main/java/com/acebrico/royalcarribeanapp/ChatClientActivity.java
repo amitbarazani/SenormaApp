@@ -462,5 +462,16 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
             });
         } catch (IOException e ) {}
     }
+    @Override
+    public void onBackPressed() {
+        if(rl_chatScreen.isShown())
+        {
+            rl_pickScreen.setVisibility(View.VISIBLE);
+            rl_chatScreen.setVisibility(View.GONE);
+        }else{
+            super.onBackPressed();
+        }
+
+    }
 
 }

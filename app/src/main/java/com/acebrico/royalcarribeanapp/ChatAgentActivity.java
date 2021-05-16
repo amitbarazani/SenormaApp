@@ -201,7 +201,7 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         if(view == img_royalcarribean)
         {
-            Intent intent = new Intent(ChatAgentActivity.this,MenuClientActivity.class);
+            Intent intent = new Intent(ChatAgentActivity.this,MenuAgentActivity.class);
             startActivity(intent);
             finish();
 
@@ -461,4 +461,15 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
         } catch (IOException e ) {}
     }
 
+    @Override
+    public void onBackPressed() {
+        if(rl_chatScreen.isShown())
+        {
+            rl_pickScreen.setVisibility(View.VISIBLE);
+            rl_chatScreen.setVisibility(View.GONE);
+        }else{
+            super.onBackPressed();
+        }
+
+    }
 }
