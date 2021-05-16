@@ -38,6 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_senderName"
         android:layout_centerHorizontal="true"
+
         android:text="content..."
+        android:textAlignment="center"
         android:textColor="@android:color/black" />
 </RelativeLayout>
