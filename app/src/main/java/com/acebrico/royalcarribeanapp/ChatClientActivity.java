@@ -3,15 +3,18 @@ package com.acebrico.royalcarribeanapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.inputmethodservice.Keyboard;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -144,6 +147,8 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     Log.d("TAG", "onFailure:"+exception);
+                    loadPickChats();
+
                 }
             });
         } catch (IOException e ) {}
@@ -214,6 +219,9 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
                 progressSendMessage.setTitle("Sending Message...");
                 progressSendMessage.show();
                 sendMessage(et_message.getText().toString());
+                et_message.clearFocus();
+
+
             }
         }else if(view == img_profilePic)
         {
