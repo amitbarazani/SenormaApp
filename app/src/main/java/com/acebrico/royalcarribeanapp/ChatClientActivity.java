@@ -381,7 +381,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
 
         Sender user = new Sender(currentUserPic,currentUserAuth.getUid(),currentUser.fullName);
         String timeStamp = new SimpleDateFormat("MM/dd/yyyy, HH:mm:ss aa").format(new Date());
-        Message messageToSend = new Message(message,"No",timeStamp,user);
+        Message messageToSend = new Message(message,"False",timeStamp,user);
 
 
         databaseReference.child(messageKey).updateChildren(messageToSend.toMap()).addOnCompleteListener(new OnCompleteListener<Void>() {
