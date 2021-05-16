@@ -109,7 +109,7 @@
             android:layout_centerHorizontal="true"
             />
         <ListView
-            android:id="@+id/lv_messages"
+            android:id="@+id/lv_pickChat"
             android:layout_below="@+id/tv_messages"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

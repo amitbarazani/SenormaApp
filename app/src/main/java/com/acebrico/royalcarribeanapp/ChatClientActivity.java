@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,7 +52,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     RelativeLayout rl_chatScreen,rl_pickScreen;
     Button btn_sendMessage,btn_changePic;
     EditText et_message;
-    ListView lv_messages,lv_chat;
+    ListView lv_pickChat,lv_chat;
     TextView tv_name,tv_talkingWith,tv_picFilename;
     //
     FirebaseStorage firebaseStorage;
@@ -61,6 +62,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     StorageReference storageReference;
 
     //
+    Bitmap imageCurrentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +76,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         rl_pickScreen = findViewById(R.id.rl_pickScreen);
         et_message = findViewById(R.id.et_message);
         lv_chat = findViewById(R.id.lv_chat);
-        lv_messages = findViewById(R.id.lv_messages);
+        lv_pickChat = findViewById(R.id.lv_pickChat);
         tv_name = findViewById(R.id.tv_name);
         tv_talkingWith = findViewById(R.id.tv_talkingWith);
         tv_picFilename = findViewById(R.id.tv_picFilename);
@@ -90,9 +92,9 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         Log.d("TAG", "user id:"+ currentUser.idNumber);
 
         //
-        progressPictureAndMessages  = new ProgressDialog(this);
-        progressPictureAndMessages.setTitle("Loading data...");
-        progressPictureAndMessages.show();
+        progressPictureAndChats = new ProgressDialog(this);
+        progressPictureAndChats.setTitle("Loading data...");
+        progressPictureAndChats.show();
         loadPicture();
         //
         if(currentUserAuth == null)
@@ -120,8 +122,9 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
             storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    img_profilePic.setImageBitmap(bitmap);
+                    imageCurrentUser = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+
+                    img_profilePic.setImageBitmap(imageCurrentUser);
                     refreshPeople();
 
 
@@ -135,7 +138,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         } catch (IOException e ) {}
     }
 
-    ProgressDialog progressPictureAndMessages;
+    ProgressDialog progressPictureAndChats;
     private ArrayList<User> users;
 
     private void refreshPeople()
@@ -165,13 +168,13 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
                                     }
                                 }
                                 PickChatAdapter pickChatAdapter = new PickChatAdapter(users,ChatClientActivity.this);
-                                lv_messages.setAdapter(pickChatAdapter);
-                                lv_messages.setOnItemClickListener(ChatClientActivity.this);
-                                progressPictureAndMessages.dismiss();
+                                lv_pickChat.setAdapter(pickChatAdapter);
+                                lv_pickChat.setOnItemClickListener(ChatClientActivity.this);
+                                progressPictureAndChats.dismiss();
                                 //Toast.makeText(ChatClientActivity.this, "loaded", Toast.LENGTH_SHORT).show();
 
                             }else{
-                                progressPictureAndMessages.dismiss();
+                                progressPictureAndChats.dismiss();
                                 Toast.makeText(ChatClientActivity.this, "there was a problem loading you data...", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -213,6 +216,8 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         {
             rl_pickScreen.setVisibility(View.VISIBLE);
             rl_chatScreen.setVisibility(View.GONE);
+            lv_chat.setAdapter(null);
+            messages = null;
 
         }
     }
@@ -318,12 +323,77 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         //Toast.makeText(this, "chosen:"+users.get(i).fullName, Toast.LENGTH_SHORT).show();
-        User tappedUser = users.get(i);
-        rl_pickScreen.setVisibility(View.GONE);
-        rl_chatScreen.setVisibility(View.VISIBLE);
-        tv_talkingWith.setText(tappedUser.fullName);
+        if(adapterView == lv_pickChat) {
+            User tappedUser = users.get(i);
+            rl_pickScreen.setVisibility(View.GONE);
+            rl_chatScreen.setVisibility(View.VISIBLE);
+            tv_talkingWith.setText(tappedUser.fullName);
+            loadImagesAndMessages(tappedUser);
 
+        }else if(view == lv_chat)
+        {
+
+        }
 
 
     }
+     ArrayList<Message> messages;
+    ProgressDialog progressLoadingMessages;
+    DatabaseReference databaseReference;
+    public void loadMessages(User tappedUser, final Bitmap imageOtherUser, final Bitmap imageCurrentUser) {
+
+        messages =new ArrayList<>();
+        databaseReference = null;
+        Integer idInt1 = Integer.parseInt(currentUser.idNumber);
+        Integer idInt2 = Integer.parseInt(tappedUser.idNumber);
+        if (idInt1 > idInt2)
+            databaseReference = db.getReference("privateMessages/").child(tappedUser.idNumber+currentUser.idNumber);
+        else
+            databaseReference = db.getReference("privateMessages/").child(currentUser.idNumber+tappedUser.idNumber);
+        databaseReference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    for (DataSnapshot dataSnapshot: task.getResult().getChildren()) {
+                        if(dataSnapshot.exists())
+                        {
+                            messages.add(dataSnapshot.getValue(Message.class));
+                        }
+                    }
+                    lv_chat.setAdapter(new MessagesAdapter(messages,ChatClientActivity.this,imageCurrentUser,imageOtherUser,currentUser.fullName));
+                    progressLoadingMessages.dismiss();
+                }
+            }
+        });
+
+    }
+
+    private void loadImagesAndMessages(final User tappedUser)
+    {
+        progressLoadingMessages  = new ProgressDialog(this);
+        progressLoadingMessages.setTitle("Loading messages...");
+        progressLoadingMessages.show();
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://senorma-64974.appspot.com").child("images/").child(tappedUser.idNumber+".jpg");
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap imageOtherUser = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    loadMessages(tappedUser,imageOtherUser,imageCurrentUser);
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d("TAG", "onFailure:"+exception);
+                    loadMessages(tappedUser,null,imageCurrentUser);
+
+                }
+            });
+        } catch (IOException e ) {}
+    }
+
 }

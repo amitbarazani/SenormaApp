@@ -1,10 +1,10 @@
 package com.acebrico.royalcarribeanapp;
 
 public class Message {
-    private String content;
-    private String seen;
-    private String timestamp;
-    private Sender user;
+    public String content;
+    public String seen;
+    public String timestamp;
+    public Sender user;
 
     public Message(String content, String seen, String timestamp, Sender user) {
         this.content = content;
