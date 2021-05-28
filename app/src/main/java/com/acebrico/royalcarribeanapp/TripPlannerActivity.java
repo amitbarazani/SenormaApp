@@ -3,17 +3,28 @@ package com.acebrico.royalcarribeanapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import java.util.List;
 
 public class TripPlannerActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     ImageView img_royalcarribean;
     Switch swt_sightseeing,swt_nightlife,swt_restaurant;
+    Button btn_planTrip;
+    EditText et_location;
+    
+    //
+    Boolean isSightSeeing,isNightLife,isRestaurants;
 
 
     @Override
@@ -21,11 +32,19 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_planner);
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
+        et_location = findViewById(R.id.et_location);
+        btn_planTrip = findViewById(R.id.btn_planTrip);
         swt_nightlife = findViewById(R.id.swt_nightlife);
         swt_restaurant = findViewById(R.id.swt_restaurant);
         swt_sightseeing = findViewById(R.id.swt_sightseeing);
 
+        isSightSeeing = false;
+        isNightLife = false;
+        isRestaurants = false;
+        
+
         img_royalcarribean.setOnClickListener(this);
+        btn_planTrip.setOnClickListener(this);
         swt_sightseeing.setOnCheckedChangeListener(this);
         swt_restaurant.setOnCheckedChangeListener(this);
         swt_nightlife.setOnCheckedChangeListener(this);
@@ -39,33 +58,66 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
             Intent intent = new Intent(TripPlannerActivity.this,MenuClientActivity.class);
             startActivity(intent);
             finish();
+        }else if(view == btn_planTrip)
+        {
+            if(!isNightLife && !isRestaurants && !isSightSeeing)
+            {
+                Toast.makeText(this, "please choose at least 1 activity", Toast.LENGTH_SHORT).show();
+            }else{
+                if(et_location.getText().toString().equals(""))
+                {
+                    Toast.makeText(this, "please type a location", Toast.LENGTH_SHORT).show();
+                }else{
+                    getLongAndLat(et_location.getText().toString());
+
+                }
+            }
         }
     }
 
+    double lat;
+    double lng;
+    public void getLongAndLat(String locationInput)
+    {
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        try {
+            address = coder.getFromLocationName(locationInput, 5);
+
+            Address location = address.get(0);
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+    }
+    
+    
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         if(compoundButton == swt_sightseeing)
         {
             if(b)
             {
-                Toast.makeText(this, "chosen sight seeing", Toast.LENGTH_SHORT).show();
+                isSightSeeing = true;
             }else{
-                Toast.makeText(this, "not chosen sight seeing", Toast.LENGTH_SHORT).show();
+                isSightSeeing = false;
             }
         }else if(compoundButton == swt_nightlife){
             if(b)
             {
-                Toast.makeText(this, "chosen night life", Toast.LENGTH_SHORT).show();
+                isNightLife = true;
             }else{
-                Toast.makeText(this, "not chosen night life", Toast.LENGTH_SHORT).show();
+                isNightLife = false;
             }
         }else if(compoundButton == swt_restaurant)
         {
             if(b)
             {
-                Toast.makeText(this, "chosen restaurant", Toast.LENGTH_SHORT).show();
+                isRestaurants = true;
             }else{
-                Toast.makeText(this, "not chosen restaurant", Toast.LENGTH_SHORT).show();
+                isRestaurants = false;
             }
         }
     }
