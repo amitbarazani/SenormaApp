@@ -76,7 +76,7 @@ public class MenuClientActivity extends AppCompatActivity implements View.OnClic
             startActivity(new Intent(MenuClientActivity.this,ChatClientActivity.class));
         }else if(view == btn_tripPlanner)
         {
-            startActivity(new Intent(MenuClientActivity.this, TripPlannerClientActivity.class));
+            startActivity(new Intent(MenuClientActivity.this, TripPlannerActivity.class));
         }
     }
 }

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/img_royalcarribean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/logo" />
+    <EditText
+        android:id="@+id/et_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Where are you travelling to?"
+        android:layout_below="@id/img_royalcarribean"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/tv_sightseeing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sight Seeing"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/et_location"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        />
+    <Switch
+        android:id="@+id/swt_sightseeing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_sightseeing"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/tv_nightlife"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Night Life"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/swt_sightseeing"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        />
+    <Switch
+        android:id="@+id/swt_nightlife"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_nightlife"
+
+        android:layout_centerHorizontal="true"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_restaurants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restaurant"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/swt_nightlife"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        />
+    <Switch
+        android:id="@+id/swt_restaurant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_restaurants"
+        android:layout_centerHorizontal="true"
+        />
+    <Button
+        android:id="@+id/btn_sendMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Plan Me A Trip!"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:background="#07186E"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:layout_alignStart="@+id/et_location"
+        android:layout_alignEnd="@+id/et_location"
+        />
+</RelativeLayout>

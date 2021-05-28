@@ -13,7 +13,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".ProfileAgentActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".TripPlannerClientActivity"
+        <activity android:name=".TripPlannerActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ChatClientActivity"
             android:screenOrientation="portrait"/>
