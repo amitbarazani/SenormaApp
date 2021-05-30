@@ -3,5 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ImageView
+        android:id="@+id/img_royalcarribean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/logo" />
+    <TextView
+        android:id="@+id/tv_topsights"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Top Sight Seeing In The Area:"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/img_royalcarribean"
+        android:textSize="18sp"
+
+        />
+    <TextView
+        android:id="@+id/tv_chooseupto4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose up to 4 atractions"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/tv_topsights"
+        android:layout_marginTop="20dp"
+        android:textSize="12sp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_locations"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_chooseupto4">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

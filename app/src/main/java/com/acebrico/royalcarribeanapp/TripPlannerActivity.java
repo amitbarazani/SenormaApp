@@ -23,6 +23,7 @@ import com.amadeus.resources.Location;
 import com.amadeus.resources.PointOfInterest;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 public class TripPlannerActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -81,28 +82,13 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                         Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            try  {
-                           // getLongAndLat(et_location.getText().toString());
-                            Amadeus amadeus = Amadeus
-                                    .builder("UNsEf8gOfR76Xk4hIFdbREVwPHRQFdyk", "jURdf96v6iemuPBy")
-                                    .build();
-                            PointOfInterest[] pointsOfInterest = amadeus.referenceData.locations.pointsOfInterest.get(Params
-                                    .with("latitude", "41.39715")
-                                    .and("longitude", "2.160873")
-                                    .and("category","SIGHTS"));
-                            Log.d("TAG", "points of interest:"+pointsOfInterest.toString());
-
-                            } catch (ResponseException e) {
-                                e.printStackTrace();
-                            }
-
+                           getLongAndLat(et_location.getText().toString());
+                            Intent intent = new Intent(TripPlannerActivity.this,ShowSightSeeingActivity.class);
+                            startActivity(intent);
                             }
                         });
 
                         thread.start();
-
-
-
                 }
             }
         }
