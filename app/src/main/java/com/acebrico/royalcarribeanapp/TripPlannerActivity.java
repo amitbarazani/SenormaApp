@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,10 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_planner);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
         et_location = findViewById(R.id.et_location);
         btn_planTrip = findViewById(R.id.btn_planTrip);
@@ -78,15 +83,17 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                 {
                     Toast.makeText(this, "please type a location", Toast.LENGTH_SHORT).show();
                 }else{
-
-                        Thread thread = new Thread(new Runnable() {
+                    Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                           getLongAndLat(et_location.getText().toString());
-                            Intent intent = new Intent(TripPlannerActivity.this,ShowSightSeeingActivity.class);
-                            startActivity(intent);
+                            try  {
+                                getLongAndLat(et_location.getText().toString());
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        });
+                        }
+                    });
 
                         thread.start();
                 }
@@ -106,6 +113,13 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
             Address location = address.get(0);
             lat = location.getLatitude();
             lng = location.getLongitude();
+            if(address.size() > 0)
+            {
+                Intent intent = new Intent(TripPlannerActivity.this,ShowSightSeeingActivity.class);
+                intent.putExtra("lat",lat);
+                intent.putExtra("lng",lng);
+                startActivity(intent);
+            }
         } catch (Exception ex) {
 
             ex.printStackTrace();
