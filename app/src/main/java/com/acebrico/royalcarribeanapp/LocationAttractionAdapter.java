@@ -50,7 +50,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
             result=convertView;
         }
 
-        TextView tv_name = (TextView)convertView.findViewById(R.id.tv_name);
+        TextView tv_name = (TextView)convertView.findViewById(R.id.tv_locationName);
         TextView tv_description = (TextView)convertView.findViewById(R.id.tv_description);
         TextView tv_isOpen = (TextView)convertView.findViewById(R.id.tv_isOpen);
         TextView tv_distance = (TextView)convertView.findViewById(R.id.tv_distance);
@@ -59,7 +59,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         ImageView img_locationPic = (ImageView) convertView.findViewById(R.id.img_locationPic);
 
         tv_name.setText(locationAttraction.name);
-        tv_description.setText(locationAttraction.name);
+        tv_description.setText(locationAttraction.description);
         if(locationAttraction.isOpen)
             tv_isOpen.setText("Open");
         else

@@ -4,25 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.amadeus.Amadeus;
 import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.PointOfInterest;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class ShowSightSeeingActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView img_royalcarribean;
-    RecyclerView rv_locations;
+    ListView lv_locations;
     //
     PointOfInterest[] pointsOfInterest;
     ArrayList<LocationAttraction> locationAttractions;
@@ -31,7 +29,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_sight_seeing);
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
-        rv_locations = findViewById(R.id.rv_locations);
+        lv_locations = findViewById(R.id.lv_locations);
 
         Double lat = getIntent().getDoubleExtra("lat",0.0);
         Double lng = getIntent().getDoubleExtra("lng",0.0);
@@ -59,14 +57,19 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
             return;
         }
         for (PointOfInterest point: pointsOfInterest) {
-            Log.d("TAG", "point:"+point.toString());
-            LocationAttraction templocation = new LocationAttraction();
-            templocation.name = point.getName();
-            templocation.lat = point.getGeoCode().getLatitude();
-            templocation.lng = point.getGeoCode().getLongitude();
-            locationAttractions.add(templocation);
-        }
+            if(point != null) {
+                Log.d("TAG", "point:" + point.toString());
+                LocationAttraction templocation = new LocationAttraction();
+                templocation.name = point.getName();
+                templocation.lat = point.getGeoCode().getLatitude();
+                templocation.lng = point.getGeoCode().getLongitude();
 
+                locationAttractions.add(templocation);
+            }
+        }
+        LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions,ShowSightSeeingActivity.this);
+        lv_locations.setAdapter(locationAttractionAdapter);
+        Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
 
     }
 
