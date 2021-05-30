@@ -9,26 +9,37 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChatAgentActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".ProfileAgentActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".TripPlannerActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ChatClientActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ProfileClientActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".MenuAgentActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".MenuClientActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ContactUsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SignUpActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".LoginActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ShowSightSeeingActivity"></activity>
+        <activity
+            android:name=".ChatAgentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileAgentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TripPlannerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ChatClientActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileClientActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MenuAgentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MenuClientActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ContactUsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">

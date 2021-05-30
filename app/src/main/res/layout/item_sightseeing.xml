@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/img_locationPic"
+        android:layout_width="200dp"
+        android:layout_height="280dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@android:drawable/sym_def_app_icon"
+      />
+    <TextView
+        android:id="@+id/tv_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_locationPic"
+        android:layout_centerHorizontal="true"
+        android:text="Distance: "
+        android:layout_marginTop="8dp"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        />
+    <TextView
+        android:id="@+id/tv_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_distance"
+        android:layout_centerHorizontal="true"
+        android:text="Rating: "
+        android:layout_marginTop="8dp"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        />
+    <TextView
+        android:id="@+id/tv_locationName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_rating"
+        android:layout_centerHorizontal="true"
+        android:text="Location name..."
+        android:layout_marginTop="8dp"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        />
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_locationName"
+        android:layout_centerHorizontal="true"
+        android:text="description... "
+        android:layout_marginTop="8dp"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        />
+    <TextView
+        android:id="@+id/tv_isOpen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_description"
+        android:layout_centerHorizontal="true"
+        android:text="Open.."
+        android:layout_marginTop="8dp"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        />
+    <CheckBox
+        android:id="@+id/cb_isLocationChosen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_isOpen"
+        android:layout_centerHorizontal="true"
+        android:text="Yes"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        />
+
+</RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -13,6 +14,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
+//
+import com.amadeus.Amadeus;
+import com.amadeus.Params;
+import com.amadeus.exceptions.ResponseException;
+import com.amadeus.referenceData.Locations;
+import com.amadeus.resources.Location;
+import com.amadeus.resources.PointOfInterest;
+
 
 import java.util.List;
 
@@ -68,7 +77,31 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                 {
                     Toast.makeText(this, "please type a location", Toast.LENGTH_SHORT).show();
                 }else{
-                    getLongAndLat(et_location.getText().toString());
+
+                        Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try  {
+                           // getLongAndLat(et_location.getText().toString());
+                            Amadeus amadeus = Amadeus
+                                    .builder("UNsEf8gOfR76Xk4hIFdbREVwPHRQFdyk", "jURdf96v6iemuPBy")
+                                    .build();
+                            PointOfInterest[] pointsOfInterest = amadeus.referenceData.locations.pointsOfInterest.get(Params
+                                    .with("latitude", "41.39715")
+                                    .and("longitude", "2.160873")
+                                    .and("category","SIGHTS"));
+                            Log.d("TAG", "points of interest:"+pointsOfInterest.toString());
+
+                            } catch (ResponseException e) {
+                                e.printStackTrace();
+                            }
+
+                            }
+                        });
+
+                        thread.start();
+
+
 
                 }
             }
