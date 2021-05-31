@@ -65,7 +65,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         else
             tv_isOpen.setText("Closed");
         tv_distance.setText("distance:..");
-        loadPicture(img_locationPic,locationAttraction.pictureUrl);
+        //loadPicture(img_locationPic,locationAttraction.pictureUrl);
         cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
