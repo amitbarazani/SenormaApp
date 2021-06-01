@@ -1,5 +1,7 @@
 package com.acebrico.royalcarribeanapp;
 
+import android.graphics.Bitmap;
+
 public class LocationAttraction {
 
     public String name;
@@ -9,15 +11,14 @@ public class LocationAttraction {
     public String description = "";
     public Boolean isOpen = false;
     public Boolean isChosen = false;
-    public String pictureUrl = "";
+    public Bitmap pictureBitmap = null;
 
-    public LocationAttraction(String name,Double lat,Double lng, Double rating, String description, Boolean isOpen, Boolean isChosen, String pictureUrl) {
+    public LocationAttraction(String name,Double lat,Double lng, Double rating, String description, Boolean isOpen, Boolean isChosen) {
         this.name = name;
         this.rating = rating;
         this.description = description;
         this.isOpen = isOpen;
         this.isChosen = isChosen;
-        this.pictureUrl = pictureUrl;
         this.lng = lng;
         this.lat = lat;
     }
@@ -35,9 +36,8 @@ public class LocationAttraction {
                 ", rating=" + rating +
                 ", description='" + description + '\'' +
                 ", isOpen=" + isOpen +
-                ", isChosen=" + isChosen +
-                ", pictureUrl='" + pictureUrl + '\'' +
-                '}';
+                ", isChosen=" + isChosen
+                + '}';
     }
 }
 

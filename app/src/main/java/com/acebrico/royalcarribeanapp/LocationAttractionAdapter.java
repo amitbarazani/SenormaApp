@@ -60,13 +60,18 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
 
         tv_name.setText(locationAttraction.name);
         tv_description.setText(locationAttraction.description);
+        tv_rating.setText(locationAttraction.rating+"");
 
-        if(locationAttraction.isOpen)
-            tv_isOpen.setText("Open");
-        else
-            tv_isOpen.setText("Closed");
+        if(locationAttraction.isOpen != null) {
+            if(locationAttraction.isOpen)
+                tv_isOpen.setText("Open");
+            else
+                tv_isOpen.setText("Closed");
+        }
+
         tv_distance.setText("distance:..");
         //loadPicture(img_locationPic,locationAttraction.pictureUrl);
+        img_locationPic.setImageBitmap(locationAttraction.pictureBitmap);
         cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

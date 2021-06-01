@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.LocationBias;
 import com.google.android.libraries.places.api.model.LocationRestriction;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
@@ -139,23 +141,56 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place place = response.getPlace();
-                    Log.i("TAG", "Place found: " + place.getName() + ","+place.getRating()+","+place.getAddress()+","+place.getOpeningHours()+","+place.getTypes());
-                    locationAttractions.get(counter).pictureUrl = place.getPhotoMetadatas().get(0).toString();
-                    locationAttractions.get(counter).isOpen = place.isOpen();
+                    Log.i("TAG", "Place found: " + place.getName() + ","+place.getRating()+","+place.getAddress()+","+place.isOpen()+","+place.getTypes());
+                    if(place.isOpen() != null)
+                        locationAttractions.get(counter).isOpen = place.isOpen();
+
                     locationAttractions.get(counter).description = place.getTypes().get(0).toString();
                     locationAttractions.get(counter).rating = place.getRating();
 
-
-                    counter++;
-                    Log.d("TAG", "location attraction:"+locationAttractions.get(counter).toString());
-
-                    if(counter != locationAttractions.size() - 1)
-                    {
-                       getPlaceDetails();
-                    }else{
-                        LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
-                        lv_locations.setAdapter(locationAttractionAdapter);
+                    // Get the photo metadata.
+                    final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+                    if (metadata == null || metadata.isEmpty()) {
+                        Log.w("TAG", "No photo metadata.");
+                        return;
                     }
+                    final PhotoMetadata photoMetadata = metadata.get(0);
+
+                    // Get the attribution text.
+                    final String attributions = photoMetadata.getAttributions();
+
+                    // Create a FetchPhotoRequest.
+                    final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                            .setMaxWidth(500) // Optional.
+                            .setMaxHeight(300) // Optional.
+                            .build();
+                    placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                        Bitmap pictureBitmap = fetchPhotoResponse.getBitmap();
+                        locationAttractions.get(counter).pictureBitmap = pictureBitmap;
+                        counter++;
+                        Log.d("TAG", "location attraction:"+locationAttractions.get(counter).toString());
+
+                        if(counter != locationAttractions.size() - 1)
+                        {
+                            getPlaceDetails();
+                        }else{
+                            LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
+                            lv_locations.setAdapter(locationAttractionAdapter);
+                        }
+
+                    }).addOnFailureListener((exception) -> {
+                        if (exception instanceof ApiException) {
+                            final ApiException apiException = (ApiException) exception;
+                            Log.e("TAG", "Place not found: " + exception.getMessage());
+                            final int statusCode = apiException.getStatusCode();
+                            // TODO: Handle error with given status code.
+                        }
+                    });
+
+
+
+
+
 
 
                 }).addOnFailureListener((exception) -> {
@@ -172,6 +207,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
 
     }
+
 
 
     @Override
