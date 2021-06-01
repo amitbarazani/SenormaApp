@@ -63,7 +63,6 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         Double lat = getIntent().getDoubleExtra("lat", 0.0);
         Double lng = getIntent().getDoubleExtra("lng", 0.0);
         loadLocations(lat, lng);
-        getAllPlaces();
 
         //
         img_royalcarribean.setOnClickListener(this);
@@ -97,13 +96,14 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         }
 
 
-        LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
-        lv_locations.setAdapter(locationAttractionAdapter);
+        getPlaceDetails();
+
         Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
 
     }
 
-    public void getAllPlaces() {
+    Integer counter = 0;
+    public void getPlaceDetails() {
         // Initialize the SDK
         Places.initialize(getApplicationContext(), "AIzaSyAlsDSqPYncPQDXhREqVsYgj6YiVGSyNMo");
 
@@ -112,48 +112,65 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
 
-        for (LocationAttraction locationAttraction:locationAttractions) {
+        // Use the builder to create a FindAutocompletePredictionsRequest.
+        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                .setSessionToken(token)
+                .setQuery(locationAttractions.get(counter).name)
+                .build();
+
+        placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+
+                // Define a Place ID.
+                for (AutocompletePrediction response : task.getResult().getAutocompletePredictions()) {
+                    Log.d("TAG", "place id:" + response.getPlaceId());
+                }
 
 
-            // Use the builder to create a FindAutocompletePredictionsRequest.
-            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                    .setTypeFilter(TypeFilter.ADDRESS)
-                    .setSessionToken(token)
-                    .setQuery(locationAttraction.name)
-                    .build();
 
-            placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                final String placeId = task.getResult().getAutocompletePredictions().get(0).getPlaceId();
+                final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME
+                        ,Place.Field.LAT_LNG,Place.Field.ADDRESS,Place.Field.PHOTO_METADATAS
+                        ,Place.Field.OPENING_HOURS,Place.Field.RATING,Place.Field.TYPES,Place.Field.UTC_OFFSET);
+                final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
 
-                    // Define a Place ID.
-                    for (AutocompletePrediction response : task.getResult().getAutocompletePredictions()) {
-                        Log.d("TAG", "place id:" + response.getPlaceId());
+
+
+                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                    Place place = response.getPlace();
+                    Log.i("TAG", "Place found: " + place.getName() + ","+place.getRating()+","+place.getAddress()+","+place.getOpeningHours()+","+place.getTypes());
+                    locationAttractions.get(counter).pictureUrl = place.getPhotoMetadatas().get(0).toString();
+                    locationAttractions.get(counter).isOpen = place.isOpen();
+                    locationAttractions.get(counter).description = place.getTypes().get(0).toString();
+                    locationAttractions.get(counter).rating = place.getRating();
+
+
+                    counter++;
+                    Log.d("TAG", "location attraction:"+locationAttractions.get(counter).toString());
+
+                    if(counter != locationAttractions.size() - 1)
+                    {
+                       getPlaceDetails();
+                    }else{
+                        LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
+                        lv_locations.setAdapter(locationAttractionAdapter);
                     }
 
 
-                    final String placeId = task.getResult().getAutocompletePredictions().get(0).getPlaceId();
-                    final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-                    final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        final ApiException apiException = (ApiException) exception;
+                        Log.e("TAG", "Place not found: " + exception.getMessage());
+                        final int statusCode = apiException.getStatusCode();
+                        // TODO: Handle error with given status code.
+                    }
+                });
+            }
+        });
 
 
-                    placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-                        Place place = response.getPlace();
-                        Log.i("TAG", "Place found: " + place.getName());
-                        locationAttraction.pictureUrl = place.getPhotoMetadatas().get(0).toString();
 
-
-                    }).addOnFailureListener((exception) -> {
-                        if (exception instanceof ApiException) {
-                            final ApiException apiException = (ApiException) exception;
-                            Log.e("TAG", "Place not found: " + exception.getMessage());
-                            final int statusCode = apiException.getStatusCode();
-                            // TODO: Handle error with given status code.
-                        }
-                    });
-                }
-            });
-        }
     }
 
 

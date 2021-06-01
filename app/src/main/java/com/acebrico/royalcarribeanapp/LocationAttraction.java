@@ -25,4 +25,19 @@ public class LocationAttraction {
     public LocationAttraction() {
 
     }
+
+    @Override
+    public String toString() {
+        return "LocationAttraction{" +
+                "name='" + name + '\'' +
+                ", lng=" + lng +
+                ", lat=" + lat +
+                ", rating=" + rating +
+                ", description='" + description + '\'' +
+                ", isOpen=" + isOpen +
+                ", isChosen=" + isChosen +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                '}';
+    }
 }
+

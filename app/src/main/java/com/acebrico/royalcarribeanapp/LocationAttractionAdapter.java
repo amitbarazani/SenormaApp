@@ -60,6 +60,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
 
         tv_name.setText(locationAttraction.name);
         tv_description.setText(locationAttraction.description);
+
         if(locationAttraction.isOpen)
             tv_isOpen.setText("Open");
         else
