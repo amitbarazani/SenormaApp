@@ -1,14 +1,10 @@
 package com.acebrico.royalcarribeanapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,26 +18,17 @@ import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.PointOfInterest;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.LocationBias;
-import com.google.android.libraries.places.api.model.LocationRestriction;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.FetchPhotoResponse;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.ArrayList;
@@ -55,12 +42,19 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
     PointOfInterest[] pointsOfInterest;
     ArrayList<LocationAttraction> locationAttractions;
 
+    ProgressDialog progressLoadingAttractions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_sight_seeing);
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
         lv_locations = findViewById(R.id.lv_locations);
+
+
+        progressLoadingAttractions = new ProgressDialog(this);
+        progressLoadingAttractions.setTitle("Loading attractions...");
+        progressLoadingAttractions.show();
 
         Double lat = getIntent().getDoubleExtra("lat", 0.0);
         Double lng = getIntent().getDoubleExtra("lng", 0.0);
@@ -176,6 +170,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                         }else{
                             LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
                             lv_locations.setAdapter(locationAttractionAdapter);
+                            progressLoadingAttractions.dismiss();
                         }
 
                     }).addOnFailureListener((exception) -> {

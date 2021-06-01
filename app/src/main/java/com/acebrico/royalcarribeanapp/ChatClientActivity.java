@@ -66,9 +66,15 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
     FirebaseUser currentUserAuth;
     FirebaseDatabase db;
     StorageReference storageReference;
-
     //
+    String currentUserPic;
     Bitmap imageCurrentUser;
+    //
+    ProgressDialog progressPictureAndChats;
+    private ArrayList<User> users;
+    //
+    ProgressDialog progressSendMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +124,6 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    String currentUserPic;
     private void loadPicture()
     {
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -155,8 +160,7 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    ProgressDialog progressPictureAndChats;
-    private ArrayList<User> users;
+
 
     private void loadPickChats()
     {
@@ -201,7 +205,6 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    ProgressDialog progressSendMessage;
     @Override
     public void onClick(View view) {
         if(view == img_royalcarribean)
