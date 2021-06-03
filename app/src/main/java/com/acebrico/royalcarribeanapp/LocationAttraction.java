@@ -7,6 +7,7 @@ public class LocationAttraction {
     public String name;
     public Double lng;
     public Double lat;
+    public Double distanceFromCurrentPlace;
     public Double rating = 0.0;
     public String description = "";
     public Boolean isOpen = false;

@@ -33,6 +33,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ShowSightSeeingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -42,6 +44,10 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
     PointOfInterest[] pointsOfInterest;
     ArrayList<LocationAttraction> locationAttractions;
 
+    Double latCurrentPlace;
+    Double lngCurrentPlace;
+    //
+    Integer loadingPercent;
     ProgressDialog progressLoadingAttractions;
 
     @Override
@@ -56,9 +62,9 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         progressLoadingAttractions.setTitle("Loading attractions...");
         progressLoadingAttractions.show();
 
-        Double lat = getIntent().getDoubleExtra("lat", 0.0);
-        Double lng = getIntent().getDoubleExtra("lng", 0.0);
-        loadLocations(lat, lng);
+         latCurrentPlace = getIntent().getDoubleExtra("lat", 0.0);
+         lngCurrentPlace = getIntent().getDoubleExtra("lng", 0.0);
+        loadLocations(latCurrentPlace, lngCurrentPlace);
 
         //
         img_royalcarribean.setOnClickListener(this);
@@ -92,6 +98,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         }
 
 
+        loadingPercent = 0;
         for(int i = 0;i<locationAttractions.size();i++) {
             getPlaceDetails(i);
         }
@@ -140,8 +147,13 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                     if(place.isOpen() != null)
                         locationAttractions.get(i).isOpen = place.isOpen();
 
-                    locationAttractions.get(i).description = place.getTypes().get(0).toString();
+                    locationAttractions.get(i).description = place.getTypes().get(0).toString().toLowerCase().replace("_"," ");
                     locationAttractions.get(i).rating = place.getRating();
+                    locationAttractions.get(i).lat = place.getLatLng().latitude;
+                    locationAttractions.get(i).lng = place.getLatLng().longitude;
+                    locationAttractions.get(i).distanceFromCurrentPlace = distance(locationAttractions.get(i).lat
+                            ,locationAttractions.get(i).lng,latCurrentPlace,lngCurrentPlace);
+
 
                     // Get the photo metadata.
                     final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
@@ -151,13 +163,9 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                     }
                     final PhotoMetadata photoMetadata = metadata.get(0);
 
-                    // Get the attribution text.
                     final String attributions = photoMetadata.getAttributions();
 
-                    // Create a FetchPhotoRequest.
                     final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                            .setMaxWidth(500) // Optional.
-                            .setMaxHeight(300) // Optional.
                             .build();
                     placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                         Bitmap pictureBitmap = fetchPhotoResponse.getBitmap();
@@ -166,8 +174,18 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
                         if(i != locationAttractions.size()-1)
                         {
-                            progressLoadingAttractions.setTitle("Loaded "+(i+1)+"/"+locationAttractions.size()+" attractions");
+                            loadingPercent +=10;
+                            progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
                         }else{
+                            /*
+                            Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
+                                @Override
+                                public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
+                                   // return
+                                }
+                            });
+
+                             */
                             LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
                             lv_locations.setAdapter(locationAttractionAdapter);
                             progressLoadingAttractions.dismiss();
@@ -203,9 +221,32 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
     }
 
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1.609344;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
 
 
-    @Override
+
+
+
+        @Override
     public void onClick(View view) {
         if(view == img_royalcarribean)
         {

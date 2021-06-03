@@ -69,7 +69,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
                 tv_isOpen.setText("Closed");
         }
 
-        tv_distance.setText("distance:..");
+        tv_distance.setText("distance:"+locationAttraction.distanceFromCurrentPlace);
         //loadPicture(img_locationPic,locationAttraction.pictureUrl);
         img_locationPic.setImageBitmap(locationAttraction.pictureBitmap);
         cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
