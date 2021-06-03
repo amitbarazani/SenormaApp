@@ -119,10 +119,19 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                 intent.putExtra("lat",lat);
                 intent.putExtra("lng",lng);
                 startActivity(intent);
+            }else{
+                Toast.makeText(this, "couldn't find place...", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception ex) {
-
+           
             ex.printStackTrace();
+            TripPlannerActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(TripPlannerActivity.this, "wifi problem: please turn on and off your airplane mode", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
     

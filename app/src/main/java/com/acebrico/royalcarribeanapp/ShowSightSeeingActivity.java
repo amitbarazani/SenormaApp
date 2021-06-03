@@ -92,14 +92,15 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         }
 
 
-        getPlaceDetails();
+        for(int i = 0;i<locationAttractions.size();i++) {
+            getPlaceDetails(i);
+        }
 
-        Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
 
     }
 
-    Integer counter = 0;
-    public void getPlaceDetails() {
+//    Integer counter = 0;
+    public void getPlaceDetails(Integer i) {
         // Initialize the SDK
         Places.initialize(getApplicationContext(), "AIzaSyAlsDSqPYncPQDXhREqVsYgj6YiVGSyNMo");
 
@@ -111,7 +112,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         // Use the builder to create a FindAutocompletePredictionsRequest.
         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
                 .setSessionToken(token)
-                .setQuery(locationAttractions.get(counter).name)
+                .setQuery(locationAttractions.get(i).name)
                 .build();
 
         placesClient.findAutocompletePredictions(request).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
@@ -137,10 +138,10 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                     Place place = response.getPlace();
                     Log.i("TAG", "Place found: " + place.getName() + ","+place.getRating()+","+place.getAddress()+","+place.isOpen()+","+place.getTypes());
                     if(place.isOpen() != null)
-                        locationAttractions.get(counter).isOpen = place.isOpen();
+                        locationAttractions.get(i).isOpen = place.isOpen();
 
-                    locationAttractions.get(counter).description = place.getTypes().get(0).toString();
-                    locationAttractions.get(counter).rating = place.getRating();
+                    locationAttractions.get(i).description = place.getTypes().get(0).toString();
+                    locationAttractions.get(i).rating = place.getRating();
 
                     // Get the photo metadata.
                     final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
@@ -160,13 +161,12 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                             .build();
                     placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                         Bitmap pictureBitmap = fetchPhotoResponse.getBitmap();
-                        locationAttractions.get(counter).pictureBitmap = pictureBitmap;
-                        counter++;
-                        Log.d("TAG", "location attraction:"+locationAttractions.get(counter).toString());
+                        locationAttractions.get(i).pictureBitmap = pictureBitmap;
+                        Log.d("TAG", "location attraction:"+locationAttractions.get(i).toString());
 
-                        if(counter != locationAttractions.size() - 1)
+                        if(i != locationAttractions.size()-1)
                         {
-                            getPlaceDetails();
+                            progressLoadingAttractions.setTitle("Loaded "+(i+1)+"/"+locationAttractions.size()+" attractions");
                         }else{
                             LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
                             lv_locations.setAdapter(locationAttractionAdapter);
