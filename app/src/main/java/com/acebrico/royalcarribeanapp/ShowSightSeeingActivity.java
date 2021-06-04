@@ -30,6 +30,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.api.LogDescriptor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,6 +84,8 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                     .and("category", "SIGHTS"));
         } catch (ResponseException e) {
             e.printStackTrace();
+            progressLoadingAttractions.dismiss();
+            Toast.makeText(this, "not found", Toast.LENGTH_SHORT).show();
             return;
         }
         for (PointOfInterest point : pointsOfInterest) {
@@ -159,6 +162,9 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                     final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
                     if (metadata == null || metadata.isEmpty()) {
                         Log.w("TAG", "No photo metadata.");
+                        loadingPercent +=10;
+                        progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
+                        Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
                         return;
                     }
                     final PhotoMetadata photoMetadata = metadata.get(0);
@@ -176,16 +182,18 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                         {
                             loadingPercent +=10;
                             progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
+                            Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
                         }else{
-                            /*
+
                             Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
                                 @Override
                                 public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
-                                   // return
+                                   Double temp1 = locationAttraction.rating / locationAttraction.distanceFromCurrentPlace;
+                                   Double temp2 = t1.rating / t1.distanceFromCurrentPlace;
+                                   return temp1.compareTo(temp2);
                                 }
                             });
-
-                             */
+                            Collections.reverse(locationAttractions);
                             LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
                             lv_locations.setAdapter(locationAttractionAdapter);
                             progressLoadingAttractions.dismiss();

@@ -60,7 +60,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
 
         tv_name.setText(locationAttraction.name);
         tv_description.setText(locationAttraction.description);
-        tv_rating.setText(locationAttraction.rating+"");
+        tv_rating.setText("rating:"+locationAttraction.rating);
 
         if(locationAttraction.isOpen != null) {
             if(locationAttraction.isOpen)
@@ -69,7 +69,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
                 tv_isOpen.setText("Closed");
         }
 
-        tv_distance.setText("distance:"+locationAttraction.distanceFromCurrentPlace);
+        tv_distance.setText("distance:"+locationAttraction.distanceFromCurrentPlace.toString().substring(0,4));
         //loadPicture(img_locationPic,locationAttraction.pictureUrl);
         img_locationPic.setImageBitmap(locationAttraction.pictureBitmap);
         cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -87,6 +87,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
 
 
 
+    /*
     private void loadPicture(final ImageView img_profilePic, final String pictureUrl)
     {
         Thread thread = new Thread(new Runnable() {
@@ -116,4 +117,6 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         thread.start();
 
     }
+
+     */
 }
