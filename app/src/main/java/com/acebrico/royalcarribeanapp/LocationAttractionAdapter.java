@@ -17,13 +17,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.zip.CheckedOutputStream;
 
 public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> {
 
 
     private ArrayList<LocationAttraction> locations;
     Context mContext;
-
+    //ArrayList<LocationAttraction> chosenAttractions;
 
 
 
@@ -31,6 +32,9 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         super(context, R.layout.item_sightseeing, data);
         this.locations = data;
         this.mContext=context;
+       // this.chosenAttractions = new ArrayList<>();
+        ShowSightSeeingActivity.chosenAttractions = new ArrayList<>();
+
 
     }
 
@@ -70,14 +74,31 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         }
 
         tv_distance.setText("distance:"+locationAttraction.distanceFromCurrentPlace.toString().substring(0,4));
-        //loadPicture(img_locationPic,locationAttraction.pictureUrl);
         img_locationPic.setImageBitmap(locationAttraction.pictureBitmap);
+
+
+        cb_isLocationChosen.setOnCheckedChangeListener(null);
+        cb_isLocationChosen.setFocusable(false);
+        if (locations.get(position).isChosen) {
+            cb_isLocationChosen.setChecked(true);
+        } else {
+            cb_isLocationChosen.setChecked(false);
+        }
         cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+                if(b)
+                {
+                    ShowSightSeeingActivity.chosenAttractions.add(locationAttraction);
+                    locations.get(position).isChosen = true;
+                }else{
+                    ShowSightSeeingActivity.chosenAttractions.remove(locationAttraction);
+                    locations.get(position).isChosen = false;
+                }
+                Log.d("TAG", "chosen attractions:"+ShowSightSeeingActivity.chosenAttractions.toString());
             }
         });
+
 
         viewGroup = parent;
 
@@ -87,36 +108,5 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
 
 
 
-    /*
-    private void loadPicture(final ImageView img_profilePic, final String pictureUrl)
-    {
-        Thread thread = new Thread(new Runnable() {
 
-            @Override
-            public void run() {
-                try  {
-                    try {
-                        java.net.URL url = new java.net.URL(pictureUrl);
-                        HttpURLConnection connection = (HttpURLConnection) url
-                                .openConnection();
-                        connection.setDoInput(true);
-                        connection.connect();
-                        InputStream input = connection.getInputStream();
-                        Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                        img_profilePic.setImageBitmap(myBitmap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.d("ERRORRRRR", "error loaded picture");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-
-    }
-
-     */
 }

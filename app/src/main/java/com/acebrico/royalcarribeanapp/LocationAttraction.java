@@ -13,6 +13,7 @@ public class LocationAttraction {
     public Boolean isOpen = false;
     public Boolean isChosen = false;
     public Bitmap pictureBitmap = null;
+    public String type;
 
     public LocationAttraction(String name,Double lat,Double lng, Double rating, String description, Boolean isOpen, Boolean isChosen) {
         this.name = name;

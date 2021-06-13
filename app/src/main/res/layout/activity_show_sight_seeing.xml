@@ -38,8 +38,18 @@
         android:id="@+id/lv_locations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tv_chooseupto4">
+        android:layout_below="@id/tv_chooseupto4"
+        android:layout_above="@id/btn_calculate"
+        />
 
-    </ListView>
+    <Button
+        android:id="@+id/btn_calculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CALCULATE THE SHORTEST TRACK!"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/holo_blue_light"
+        />
 
 </RelativeLayout>

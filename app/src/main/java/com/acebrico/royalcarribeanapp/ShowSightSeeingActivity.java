@@ -4,11 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -30,7 +32,6 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.api.LogDescriptor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ import java.util.List;
 public class ShowSightSeeingActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView img_royalcarribean;
     ListView lv_locations;
+    Button btn_calculate;
     //
     PointOfInterest[] pointsOfInterest;
     ArrayList<LocationAttraction> locationAttractions;
@@ -50,17 +52,26 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
     //
     Integer loadingPercent;
     ProgressDialog progressLoadingAttractions;
-
+    public static ArrayList<LocationAttraction> chosenAttractions;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_sight_seeing);
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
+        btn_calculate = findViewById(R.id.btn_calculate);
         lv_locations = findViewById(R.id.lv_locations);
 
+        chosenAttractions = new ArrayList<>();
 
         progressLoadingAttractions = new ProgressDialog(this);
         progressLoadingAttractions.setTitle("Loading attractions...");
+        progressLoadingAttractions.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Toast.makeText(ShowSightSeeingActivity.this, "canceled", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
         progressLoadingAttractions.show();
 
          latCurrentPlace = getIntent().getDoubleExtra("lat", 0.0);
@@ -69,6 +80,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
         //
         img_royalcarribean.setOnClickListener(this);
+        btn_calculate.setOnClickListener(this);
     }
 
 
@@ -261,6 +273,15 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
             Intent intent = new Intent(ShowSightSeeingActivity.this,MenuClientActivity.class);
             startActivity(intent);
             finish();
+        }else if(view == btn_calculate)
+        {
+            if(chosenAttractions.size() > 0 && chosenAttractions.size() <= 4)
+            {
+                Log.d("TAG", "chosen attractions:"+chosenAttractions);
+                //Intent intent = new Intent()
+            }else{
+                Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
