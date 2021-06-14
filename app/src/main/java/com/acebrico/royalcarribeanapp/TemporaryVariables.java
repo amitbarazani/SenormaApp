@@ -8,4 +8,7 @@ public class TemporaryVariables {
     public static Boolean isSightSeeingChosen = false;
     public static Boolean isNightLifeChosen = false;
     public static Boolean isRestaurantsChosen = false;
+    public static String startPointName;
+    public static Double startPointLng;
+    public static Double startPointLat;
 }

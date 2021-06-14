@@ -64,6 +64,23 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
         TemporaryVariables.chosenAttractions = new ArrayList<>();
 
+        latCurrentPlace = TemporaryVariables.startPointLat;
+         lngCurrentPlace = TemporaryVariables.startPointLng;
+
+        //
+        img_royalcarribean.setOnClickListener(this);
+        btn_calculate.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        TemporaryVariables.chosenAttractions = new ArrayList<>();
+
+        loadLocations(latCurrentPlace, lngCurrentPlace);
+        super.onStart();
+    }
+
+    public void loadLocations(Double lat, Double lng) {
         progressLoadingAttractions = new ProgressDialog(this);
         progressLoadingAttractions.setTitle("Loading attractions...");
         progressLoadingAttractions.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -75,17 +92,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         });
         progressLoadingAttractions.show();
 
-         latCurrentPlace = getIntent().getDoubleExtra("lat", 0.0);
-         lngCurrentPlace = getIntent().getDoubleExtra("lng", 0.0);
-        loadLocations(latCurrentPlace, lngCurrentPlace);
 
-        //
-        img_royalcarribean.setOnClickListener(this);
-        btn_calculate.setOnClickListener(this);
-    }
-
-
-    public void loadLocations(Double lat, Double lng) {
         locationAttractions = new ArrayList<>();
         Amadeus amadeus = Amadeus
                 .builder("xzDnM1eqDw4TlRIjAdqQ4LOxbZ015ida", "OBXSABf3MkqJD2ob")
@@ -124,6 +131,9 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
 //    Integer counter = 0;
     public void getPlaceDetails(Integer i) {
+
+
+
         // Initialize the SDK
         Places.initialize(getApplicationContext(), "AIzaSyAlsDSqPYncPQDXhREqVsYgj6YiVGSyNMo");
 
@@ -198,18 +208,22 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                             Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
                         }else{
 
-                            Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
-                                @Override
-                                public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
-                                   Double temp1 = locationAttraction.rating / locationAttraction.distanceFromCurrentPlace;
-                                   Double temp2 = t1.rating / t1.distanceFromCurrentPlace;
-                                   return temp1.compareTo(temp2);
-                                }
-                            });
-                            Collections.reverse(locationAttractions);
-                            LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
-                            lv_locations.setAdapter(locationAttractionAdapter);
-                            progressLoadingAttractions.dismiss();
+                            if(locationAttractions != null) {
+                                Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
+                                    @Override
+                                    public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
+                                        Double temp1 = locationAttraction.rating / locationAttraction.distanceFromCurrentPlace;
+                                        Double temp2 = t1.rating / t1.distanceFromCurrentPlace;
+                                        return temp1.compareTo(temp2);
+                                    }
+                                });
+                                Collections.reverse(locationAttractions);
+                                LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowSightSeeingActivity.this);
+                                lv_locations.setAdapter(locationAttractionAdapter);
+                                progressLoadingAttractions.dismiss();
+                            }else{
+                                Toast.makeText(ShowSightSeeingActivity.this, "There was a problem loading your locations... please try again and check your wifi..", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                     }).addOnFailureListener((exception) -> {
@@ -284,5 +298,11 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                 Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        
+        super.onBackPressed();
     }
 }

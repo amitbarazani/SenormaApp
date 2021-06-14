@@ -48,12 +48,12 @@
         android:text="End Point..."
         android:layout_centerHorizontal="true"
         android:textColor="@android:color/black"
-        android:layout_above="@id/tv_distance"
+        android:layout_above="@id/tv_distanceToEndPoint"
         android:textSize="12sp"
         android:textStyle="bold"
         />
     <TextView
-        android:id="@+id/tv_distance"
+        android:id="@+id/tv_distanceToEndPoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Distance:..."

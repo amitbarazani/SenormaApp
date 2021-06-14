@@ -112,9 +112,10 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
             lng = location.getLongitude();
             if(address.size() > 0)
             {
+                TemporaryVariables.startPointLat = lat;
+                TemporaryVariables.startPointLng = lng;
+                TemporaryVariables.startPointName = et_location.getText().toString();
                 Intent intent = new Intent(TripPlannerActivity.this,ShowSightSeeingActivity.class);
-                intent.putExtra("lat",lat);
-                intent.putExtra("lng",lng);
                 startActivity(intent);
             }else{
                 Toast.makeText(this, "couldn't find place...", Toast.LENGTH_SHORT).show();
