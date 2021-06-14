@@ -54,7 +54,6 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
     //
     Integer loadingPercent;
     ProgressDialog progressLoadingAttractions;
-    public static ArrayList<LocationAttraction> chosenAttractions;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +62,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         btn_calculate = findViewById(R.id.btn_calculate);
         lv_locations = findViewById(R.id.lv_locations);
 
-        chosenAttractions = new ArrayList<>();
+        TemporaryVariables.chosenAttractions = new ArrayList<>();
 
         progressLoadingAttractions = new ProgressDialog(this);
         progressLoadingAttractions.setTitle("Loading attractions...");
@@ -277,14 +276,9 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
             finish();
         }else if(view == btn_calculate)
         {
-            if(chosenAttractions.size() > 0 && chosenAttractions.size() <= 4)
+            if(TemporaryVariables.chosenAttractions.size() > 0 && TemporaryVariables.chosenAttractions.size() <= 4)
             {
                 Intent intent = new Intent(ShowSightSeeingActivity.this,TripSummaryActivity.class);
-                /*Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("locations", chosenAttractions);
-                intent.putExtras(bundle);
-
-                 */
                 startActivity(intent);
             }else{
                 Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();

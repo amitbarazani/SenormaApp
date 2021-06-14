@@ -22,9 +22,14 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_summary);
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
+        btn_save = findViewById(R.id.btn_save);
         tv_endPoint = findViewById(R.id.tv_endPoint);
         tv_startPoint = findViewById(R.id.tv_startingPoint);
         lv_locations = findViewById(R.id.lv_locations);
+        //
+        LocationSummaryAdapter locationSummaryAdapter = new LocationSummaryAdapter(
+                TemporaryVariables.chosenAttractions,TripSummaryActivity.this);
+        lv_locations.setAdapter(locationSummaryAdapter);
         //
         img_royalcarribean.setOnClickListener(this);
         btn_save.setOnClickListener(this);

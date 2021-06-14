@@ -35,7 +35,6 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
     EditText et_location;
     
     //
-    Boolean isSightSeeing,isNightLife,isRestaurants;
 
 
     @Override
@@ -53,9 +52,7 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
         swt_restaurant = findViewById(R.id.swt_restaurant);
         swt_sightseeing = findViewById(R.id.swt_sightseeing);
 
-        isSightSeeing = false;
-        isNightLife = false;
-        isRestaurants = false;
+
         
 
         img_royalcarribean.setOnClickListener(this);
@@ -75,7 +72,7 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
             finish();
         }else if(view == btn_planTrip)
         {
-            if(!isNightLife && !isRestaurants && !isSightSeeing)
+            if(!TemporaryVariables.isNightLifeChosen && !TemporaryVariables.isRestaurantsChosen && !TemporaryVariables.isSightSeeingChosen)
             {
                 Toast.makeText(this, "please choose at least 1 activity", Toast.LENGTH_SHORT).show();
             }else{
@@ -142,24 +139,24 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
         {
             if(b)
             {
-                isSightSeeing = true;
+                TemporaryVariables.isSightSeeingChosen = true;
             }else{
-                isSightSeeing = false;
+                TemporaryVariables.isSightSeeingChosen = false;
             }
         }else if(compoundButton == swt_nightlife){
             if(b)
             {
-                isNightLife = true;
+                TemporaryVariables.isNightLifeChosen = true;
             }else{
-                isNightLife = false;
+                TemporaryVariables.isNightLifeChosen = false;
             }
         }else if(compoundButton == swt_restaurant)
         {
             if(b)
             {
-                isRestaurants = true;
+                TemporaryVariables.isRestaurantsChosen = true;
             }else{
-                isRestaurants = false;
+                TemporaryVariables.isRestaurantsChosen = false;
             }
         }
     }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 import java.util.zip.CheckedOutputStream;
 
 public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> {
@@ -33,7 +34,7 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         this.locations = data;
         this.mContext=context;
        // this.chosenAttractions = new ArrayList<>();
-        ShowSightSeeingActivity.chosenAttractions = new ArrayList<>();
+        TemporaryVariables.chosenAttractions = new ArrayList<>();
 
 
     }
@@ -89,13 +90,13 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
-                    ShowSightSeeingActivity.chosenAttractions.add(locationAttraction);
+                    TemporaryVariables.chosenAttractions.add(locationAttraction);
                     locations.get(position).isChosen = true;
                 }else{
-                    ShowSightSeeingActivity.chosenAttractions.remove(locationAttraction);
+                    TemporaryVariables.chosenAttractions.remove(locationAttraction);
                     locations.get(position).isChosen = false;
                 }
-                Log.d("TAG", "chosen attractions:"+ShowSightSeeingActivity.chosenAttractions.toString());
+                Log.d("TAG", "chosen attractions:"+ TemporaryVariables.chosenAttractions.toString());
             }
         });
 
