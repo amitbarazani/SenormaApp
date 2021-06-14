@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ImageView
+        android:id="@+id/img_royalcarribean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:src="@drawable/logo" />
+    <TextView
+        android:id="@+id/tv_startingPoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Starting Point..."
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/img_royalcarribean"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/tv_startingPointText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Starting Point"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/tv_startingPoint"
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        />
+    <ListView
+        android:id="@+id/lv_locations"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/tv_startingPointText"
+        android:layout_above="@id/tv_endPoint"
+        />
+    <TextView
+        android:id="@+id/tv_endPoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End Point..."
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:layout_above="@id/tv_distance"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/tv_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance:..."
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/black"
+        android:layout_above="@id/btn_calculate"
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        />
+    <Button
+        android:id="@+id/btn_calculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/holo_blue_light"
+        />
+</RelativeLayout>

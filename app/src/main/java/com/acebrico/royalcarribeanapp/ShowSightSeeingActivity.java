@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -266,7 +268,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
 
 
-        @Override
+    @Override
     public void onClick(View view) {
         if(view == img_royalcarribean)
         {
@@ -277,8 +279,13 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         {
             if(chosenAttractions.size() > 0 && chosenAttractions.size() <= 4)
             {
-                Log.d("TAG", "chosen attractions:"+chosenAttractions);
-                //Intent intent = new Intent()
+                Intent intent = new Intent(ShowSightSeeingActivity.this,TripSummaryActivity.class);
+                /*Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("locations", chosenAttractions);
+                intent.putExtras(bundle);
+
+                 */
+                startActivity(intent);
             }else{
                 Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
             }
