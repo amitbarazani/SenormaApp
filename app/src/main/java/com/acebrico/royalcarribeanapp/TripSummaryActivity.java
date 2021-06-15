@@ -1,20 +1,30 @@
 package com.acebrico.royalcarribeanapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 
 public class TripSummaryActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -36,6 +46,8 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         tv_startPoint.setText(TemporaryVariables.startPointName);
         tv_endPoint.setText(TemporaryVariables.startPointName);
         sortAttractions();
+        updateDistances();
+
         LocationSummaryAdapter locationSummaryAdapter = new LocationSummaryAdapter(
                 TemporaryVariables.chosenAttractions,TripSummaryActivity.this);
         lv_locations.setAdapter(locationSummaryAdapter);
@@ -46,6 +58,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
     }
     public void sortAttractions()
     {
+
         Collections.sort(TemporaryVariables.chosenAttractions, new Comparator<LocationAttraction>() {
             @Override
             public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
@@ -54,52 +67,96 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
                 return temp1.compareTo(temp2);
             }
         });
-        updateDistances();
+
+        Log.d("TAG", "attractions now:"+TemporaryVariables.chosenAttractions.toString());
+
         //Collections.reverse(TemporaryVariables.chosenAttractions);
     }
 
 
     public void updateDistances()
     {
-        String distanceFromLastLocation = distance(
-                TemporaryVariables.startPointLat,TemporaryVariables.startPointLng,
-                TemporaryVariables.chosenAttractions.get(0).lat,TemporaryVariables.chosenAttractions.get(0).lng) + "";
 
-        switch (TemporaryVariables.chosenAttractions.size())
-        {
-            case 2:
-                distanceFromLastLocation = distance(
-                        TemporaryVariables.startPointLat,TemporaryVariables.startPointLng,
-                        TemporaryVariables.chosenAttractions.get(1).lat,TemporaryVariables.chosenAttractions.get(1).lng) + "";
-                updateDistanceByPreviousLocation(1);
-                break;
-            case 3:
-                distanceFromLastLocation = distance(
-                        TemporaryVariables.startPointLat,TemporaryVariables.startPointLng,
-                        TemporaryVariables.chosenAttractions.get(2).lat,TemporaryVariables.chosenAttractions.get(2).lng) + "";
-                updateDistanceByPreviousLocation(1);
-                updateDistanceByPreviousLocation(2);
-                break;
-            case 4:
-                distanceFromLastLocation = distance(
-                        TemporaryVariables.startPointLat,TemporaryVariables.startPointLng,
-                        TemporaryVariables.chosenAttractions.get(3).lat,TemporaryVariables.chosenAttractions.get(3).lng) + "";
-                updateDistanceByPreviousLocation(1);
-                updateDistanceByPreviousLocation(2);
-                updateDistanceByPreviousLocation(3);
-                break;
+        if (TemporaryVariables.chosenAttractions.size() == 2) {
+            TemporaryVariables.chosenAttractions.get(1).distanceFromCurrentPlace = distanceBetweenTwoLocations(
+                    TemporaryVariables.chosenAttractions.get(0), TemporaryVariables.chosenAttractions.get(1));
+        }else if(TemporaryVariables.chosenAttractions.size() == 3) {
+            ArrayList<LocationAttraction> tempList = new ArrayList<>();
+            LocationAttraction location0 = TemporaryVariables.chosenAttractions.get(0);
+            LocationAttraction location1 = TemporaryVariables.chosenAttractions.get(1);
+            LocationAttraction location2 = TemporaryVariables.chosenAttractions.get(2);
+            if(distanceBetweenTwoLocations(location0,location1) < distanceBetweenTwoLocations(location0,location2))
+            {
+                tempList.add(location0);
+                tempList.add(location1);
+                tempList.add(location2);
+            }else {
+                tempList.add(location0);
+                tempList.add(location2);
+                tempList.add(location1);
+            }
+
+            TemporaryVariables.chosenAttractions = tempList;
+        }else if(TemporaryVariables.chosenAttractions.size() == 4){
+            TemporaryVariables.chosenAttractions = sortByDistance(TemporaryVariables.chosenAttractions.get(0)
+                    ,TemporaryVariables.chosenAttractions,new ArrayList<>());
         }
+
+        String distanceFromLastLocation = distance(
+                TemporaryVariables.startPointLat, TemporaryVariables.startPointLng,
+                TemporaryVariables.chosenAttractions.get(TemporaryVariables.chosenAttractions.size() - 1).lat,
+                TemporaryVariables.chosenAttractions.get(TemporaryVariables.chosenAttractions.size() - 1).lng) + "";
         tv_distanceToEndPoint.setText("Distance:"+distanceFromLastLocation.substring(0,4) +"KM");
 
     }
 
-    public void updateDistanceByPreviousLocation(Integer index)
+
+
+
+    public ArrayList<LocationAttraction> sortByDistance(LocationAttraction tempAttraction
+            ,ArrayList<LocationAttraction> locations,ArrayList<LocationAttraction> updatedLocations)
     {
-        LocationAttraction current = TemporaryVariables.chosenAttractions.get(index);
-        LocationAttraction previous = TemporaryVariables.chosenAttractions.get(index - 1);
-        current.distanceFromCurrentPlace = distance(previous.lat,previous.lng,current.lat,current.lng);
-        TemporaryVariables.chosenAttractions.set(index,current);
+        Log.d("TAG", "locations size:"+locations.size());
+        if(locations.size() == 1)
+        {
+            LocationAttraction tempAttraction1 = locations.get(0);
+            updatedLocations.add(tempAttraction1);
+            locations.remove(0);
+            return updatedLocations;
+        }
+        if(updatedLocations.size() == 0)
+        {
+            updatedLocations.add(tempAttraction);
+            locations.remove(0);
+        }
+
+        Double min = 10000000.0;
+        int minIndex = -1;
+        for (int i = 0;i<locations.size();i++)
+        {
+            if(tempAttraction != locations.get(i)) {
+                if (distanceBetweenTwoLocations(tempAttraction,locations.get(i)) < min) {
+                    min = distanceBetweenTwoLocations(tempAttraction,locations.get(i));
+                    minIndex = i;
+                    Log.d("TAG", "name of min attraction:"+locations.get(i).name);
+                }
+            }
+        }
+        Log.d("TAG", "min Index:"+minIndex);
+        LocationAttraction tempAttraction1 = locations.get(minIndex);
+        updatedLocations.add(tempAttraction1);
+        locations.remove(minIndex);
+        Log.d("TAG", "locations:"+locations.toString());
+        return sortByDistance(tempAttraction1,locations,updatedLocations);
+
     }
+
+
+    public Double distanceBetweenTwoLocations(LocationAttraction location1,LocationAttraction location2)
+    {
+        return distance(location1.lat,location1.lng,location2.lat,location2.lng);
+    }
+
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;
@@ -130,7 +187,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
             finish();
         }else if(view == btn_save)
         {
-            //TODO:save screenshot of the page
+            takeScreenshot();
         }
     }
 
@@ -139,4 +196,48 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         startActivity( new Intent(TripSummaryActivity.this,TripPlannerActivity.class));
         finish();
     }
+
+
+    private void takeScreenshot() {
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},00);
+
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh_mm_ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now.toLocaleString() + ".jpg";
+
+            // create bitmap screen capture
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            Toast.makeText(this, "screenshot successfull, open your gallery to see it!", Toast.LENGTH_SHORT).show();
+            openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or DOM
+            e.printStackTrace();
+        }
+    }
+
+
+    private void openScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+    }
+    
+
 }

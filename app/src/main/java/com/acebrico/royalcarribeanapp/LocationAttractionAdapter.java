@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,15 +89,18 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b)
-                {
-                    TemporaryVariables.chosenAttractions.add(locationAttraction);
-                    locations.get(position).isChosen = true;
+                if(TemporaryVariables.chosenAttractions.size() < 4) {
+                    if (b) {
+                        TemporaryVariables.chosenAttractions.add(locationAttraction);
+                        locations.get(position).isChosen = true;
+                    } else {
+                        TemporaryVariables.chosenAttractions.remove(locationAttraction);
+                        locations.get(position).isChosen = false;
+                    }
                 }else{
-                    TemporaryVariables.chosenAttractions.remove(locationAttraction);
-                    locations.get(position).isChosen = false;
+                    Toast.makeText(mContext, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
+                    cb_isLocationChosen.setChecked(false);
                 }
-                Log.d("TAG", "chosen attractions:"+ TemporaryVariables.chosenAttractions.toString());
             }
         });
 

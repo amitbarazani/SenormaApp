@@ -294,6 +294,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
             {
                 Intent intent = new Intent(ShowSightSeeingActivity.this,TripSummaryActivity.class);
                 startActivity(intent);
+                finish();
             }else{
                 Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
             }
