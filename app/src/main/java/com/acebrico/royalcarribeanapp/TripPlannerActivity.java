@@ -115,9 +115,17 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                 TemporaryVariables.startPointLat = lat;
                 TemporaryVariables.startPointLng = lng;
                 TemporaryVariables.startPointName = et_location.getText().toString();
-                Intent intent = new Intent(TripPlannerActivity.this,ShowSightSeeingActivity.class);
-                startActivity(intent);
-                finish();
+                if(TemporaryVariables.isSightSeeingChosen && !TemporaryVariables.isRestaurantsChosen && !TemporaryVariables.isNightLifeChosen) {
+                    Intent intent = new Intent(TripPlannerActivity.this, ShowSightSeeingActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else if(!TemporaryVariables.isSightSeeingChosen && !TemporaryVariables.isRestaurantsChosen && TemporaryVariables.isNightLifeChosen)
+                {
+                    Intent intent = new Intent(TripPlannerActivity.this, ShowNightLifeActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
             }else{
                 Toast.makeText(this, "couldn't find place...", Toast.LENGTH_SHORT).show();
             }
