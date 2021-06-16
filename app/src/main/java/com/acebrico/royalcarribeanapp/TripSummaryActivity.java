@@ -2,6 +2,7 @@ package com.acebrico.royalcarribeanapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -187,7 +191,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
             finish();
         }else if(view == btn_save)
         {
-            takeScreenshot();
+            saveScreenshot();
         }
     }
 
@@ -198,43 +202,51 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    private void takeScreenshot() {
+    //TODO: not working, needs to be fixed
+    private void saveScreenshot() {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},00);
 
-        Date now = new Date();
-        android.text.format.DateFormat.format("yyyy-MM-dd_hh_mm_ss", now);
+        String filename;
+        Date date = new Date(0);
+        SimpleDateFormat sdf = new SimpleDateFormat ("ddMMyyyyHHmmss");
+        filename =  sdf.format(date);
 
-        try {
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now.toLocaleString() + ".jpg";
+        try{
+            String path = Environment.getExternalStorageDirectory().toString();
+            OutputStream fOut = null;
+            File file = new File(path, "/Download/"+filename+".jpg");
+            fOut = new FileOutputStream(file);
 
-            // create bitmap screen capture
-            View v1 = getWindow().getDecorView().getRootView();
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            v1.setDrawingCacheEnabled(false);
+            takeScreenshot().compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            fOut.flush();
+            fOut.close();
 
-            File imageFile = new File(mPath);
-
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
-
-            Toast.makeText(this, "screenshot successfull, open your gallery to see it!", Toast.LENGTH_SHORT).show();
-            openScreenshot(imageFile);
-        } catch (Throwable e) {
-            // Several error may come out with file handling or DOM
+            MediaStore.Images.Media.insertImage(getContentResolver()
+                    ,file.getAbsolutePath(),file.getName(),file.getName());
+            openScreenshot(file);
+        }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private Bitmap takeScreenshot()
+    {
+        // create bitmap screen capture
+        View v1 = getWindow().getDecorView().getRootView();
+        v1.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+        v1.setDrawingCacheEnabled(false);
+        return bitmap;
     }
 
 
     private void openScreenshot(File imageFile) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(imageFile);
+        Uri uri = FileProvider.getUriForFile(TripSummaryActivity.this,
+                TripSummaryActivity.this.getApplicationContext().getPackageName() + ".provider", imageFile);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setDataAndType(uri, "image/*");
         startActivity(intent);
     }
