@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.function.Consumer;
 
 public class TripSummaryActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -36,6 +37,8 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
     TextView tv_startPoint,tv_endPoint,tv_distanceToEndPoint;
     ListView lv_locations;
     Button btn_save;
+
+    ArrayList<LocationAttraction> chosenAttractions;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,21 +52,51 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         //
         tv_startPoint.setText(TemporaryVariables.startPointName);
         tv_endPoint.setText(TemporaryVariables.startPointName);
-        sortAttractions();
-        updateDistances();
+
+        if(TemporaryVariables.isNightLifeChosen && !TemporaryVariables.isSightSeeingChosen)
+        {
+            chosenAttractions = TemporaryVariables.chosenNightLifeAttractions;
+        }else if(!TemporaryVariables.isNightLifeChosen && TemporaryVariables.isSightSeeingChosen)
+        {
+            chosenAttractions = TemporaryVariables.chosenSightSeeingAttractions;
+            sortAttractions(chosenAttractions);
+            updateDistances(chosenAttractions);
+        }else{
+            sortAttractions(TemporaryVariables.chosenSightSeeingAttractions);
+            updateDistances(TemporaryVariables.chosenSightSeeingAttractions);
+            sortAttractions(TemporaryVariables.chosenNightLifeAttractions);
+            updateDistances(TemporaryVariables.chosenNightLifeAttractions);
+            chosenAttractions = new ArrayList<>();
+            TemporaryVariables.chosenSightSeeingAttractions.forEach(new Consumer<LocationAttraction>() {
+                @Override
+                public void accept(LocationAttraction locationAttraction) {
+                    chosenAttractions.add(locationAttraction);
+                }
+            });
+            TemporaryVariables.chosenNightLifeAttractions.forEach(new Consumer<LocationAttraction>() {
+                @Override
+                public void accept(LocationAttraction locationAttraction) {
+                    chosenAttractions.add(locationAttraction);
+                }
+            });
+        }
+
+
+
+
 
         LocationSummaryAdapter locationSummaryAdapter = new LocationSummaryAdapter(
-                TemporaryVariables.chosenAttractions,TripSummaryActivity.this);
+                chosenAttractions,TripSummaryActivity.this);
         lv_locations.setAdapter(locationSummaryAdapter);
         //
         img_royalcarribean.setOnClickListener(this);
         btn_save.setOnClickListener(this);
 
     }
-    public void sortAttractions()
+    public void sortAttractions(ArrayList<LocationAttraction> locations)
     {
 
-        Collections.sort(TemporaryVariables.chosenAttractions, new Comparator<LocationAttraction>() {
+        Collections.sort(locations, new Comparator<LocationAttraction>() {
             @Override
             public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
                 Double temp1 = locationAttraction.distanceFromCurrentPlace;
@@ -72,23 +105,23 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        Log.d("TAG", "attractions now:"+TemporaryVariables.chosenAttractions.toString());
+        Log.d("TAG", "locations now:"+locations.toString());
 
         //Collections.reverse(TemporaryVariables.chosenAttractions);
     }
 
 
-    public void updateDistances()
+    public void updateDistances(ArrayList<LocationAttraction> locations)
     {
 
-        if (TemporaryVariables.chosenAttractions.size() == 2) {
-            TemporaryVariables.chosenAttractions.get(1).distanceFromCurrentPlace = distanceBetweenTwoLocations(
-                    TemporaryVariables.chosenAttractions.get(0), TemporaryVariables.chosenAttractions.get(1));
-        }else if(TemporaryVariables.chosenAttractions.size() == 3) {
+        if (locations.size() == 2) {
+            locations.get(1).distanceFromCurrentPlace = distanceBetweenTwoLocations(
+                    locations.get(0), locations.get(1));
+        }else if(locations.size() == 3) {
             ArrayList<LocationAttraction> tempList = new ArrayList<>();
-            LocationAttraction location0 = TemporaryVariables.chosenAttractions.get(0);
-            LocationAttraction location1 = TemporaryVariables.chosenAttractions.get(1);
-            LocationAttraction location2 = TemporaryVariables.chosenAttractions.get(2);
+            LocationAttraction location0 = locations.get(0);
+            LocationAttraction location1 = locations.get(1);
+            LocationAttraction location2 = locations.get(2);
             if(distanceBetweenTwoLocations(location0,location1) < distanceBetweenTwoLocations(location0,location2))
             {
                 tempList.add(location0);
@@ -100,16 +133,16 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
                 tempList.add(location1);
             }
 
-            TemporaryVariables.chosenAttractions = tempList;
-        }else if(TemporaryVariables.chosenAttractions.size() == 4){
-            TemporaryVariables.chosenAttractions = sortByDistance(TemporaryVariables.chosenAttractions.get(0)
-                    ,TemporaryVariables.chosenAttractions,new ArrayList<>());
+            locations = tempList;
+        }else if(locations.size() == 4){
+            locations = sortByDistance(locations.get(0)
+                    ,locations,new ArrayList<>());
         }
 
         String distanceFromLastLocation = distance(
                 TemporaryVariables.startPointLat, TemporaryVariables.startPointLng,
-                TemporaryVariables.chosenAttractions.get(TemporaryVariables.chosenAttractions.size() - 1).lat,
-                TemporaryVariables.chosenAttractions.get(TemporaryVariables.chosenAttractions.size() - 1).lng) + "";
+                locations.get(locations.size() - 1).lat,
+                locations.get(locations.size() - 1).lng) + "";
         tv_distanceToEndPoint.setText("Distance:"+distanceFromLastLocation.substring(0,4) +"KM");
 
     }

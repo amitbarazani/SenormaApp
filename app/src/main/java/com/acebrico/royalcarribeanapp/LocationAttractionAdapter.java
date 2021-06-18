@@ -34,8 +34,8 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         super(context, R.layout.item_sightseeing, data);
         this.locations = data;
         this.mContext=context;
+
        // this.chosenAttractions = new ArrayList<>();
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
 
 
     }
@@ -77,9 +77,9 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         tv_distance.setText("distance:"+locationAttraction.distanceFromCurrentPlace.toString().substring(0,4));
         img_locationPic.setImageBitmap(locationAttraction.pictureBitmap);
 
+        CheckBox  cb_isLocationChosen = convertView.findViewById(R.id.cb_isLocationChosen);
 
-        if(locationAttraction.type.equals("restaurant")) {
-            CheckBox cb_isLocationChosen = convertView.findViewById(R.id.cb_isLocationChosen);
+        if(!locationAttraction.type.equals("restaurant")) {
             cb_isLocationChosen.setOnCheckedChangeListener(null);
             cb_isLocationChosen.setFocusable(false);
             if (locations.get(position).isChosen) {
@@ -90,20 +90,38 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
             cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (TemporaryVariables.chosenAttractions.size() < 4) {
+
+                    if (locationAttraction.type.equals("nightlife")) {
                         if (b) {
-                            TemporaryVariables.chosenAttractions.add(locationAttraction);
-                            locations.get(position).isChosen = true;
+                            if (TemporaryVariables.chosenSightSeeingAttractions.size() + TemporaryVariables.chosenNightLifeAttractions.size() < 4) {
+                                TemporaryVariables.chosenNightLifeAttractions.add(locationAttraction);
+                                locations.get(position).isChosen = true;
+                            } else {
+                                Toast.makeText(mContext, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
+                                cb_isLocationChosen.setChecked(false);
+                            }
                         } else {
-                            TemporaryVariables.chosenAttractions.remove(locationAttraction);
+                            TemporaryVariables.chosenNightLifeAttractions.remove(locationAttraction);
                             locations.get(position).isChosen = false;
                         }
-                    } else {
-                        Toast.makeText(mContext, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
-                        cb_isLocationChosen.setChecked(false);
+                    } else if (locationAttraction.type.equals("sightseeing")) {
+                        if (b) {
+                            if (TemporaryVariables.chosenSightSeeingAttractions.size() + TemporaryVariables.chosenNightLifeAttractions.size() < 4) {
+                                TemporaryVariables.chosenSightSeeingAttractions.add(locationAttraction);
+                                locations.get(position).isChosen = true;
+                            } else {
+                                Toast.makeText(mContext, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
+                                cb_isLocationChosen.setChecked(false);
+                            }
+                        } else {
+                            TemporaryVariables.chosenSightSeeingAttractions.remove(locationAttraction);
+                            locations.get(position).isChosen = false;
+                        }
                     }
                 }
             });
+        }else{
+            cb_isLocationChosen.setVisibility(View.GONE);
         }
 
         viewGroup = parent;

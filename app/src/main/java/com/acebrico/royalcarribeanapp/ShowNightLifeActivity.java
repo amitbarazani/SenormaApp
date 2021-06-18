@@ -1,20 +1,19 @@
 package com.acebrico.royalcarribeanapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.amadeus.Amadeus;
 import com.amadeus.Params;
@@ -34,7 +33,6 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,7 +60,7 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
         btn_calculate = findViewById(R.id.btn_calculate);
         lv_locations = findViewById(R.id.lv_locations);
 
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
+        TemporaryVariables.chosenNightLifeAttractions = new ArrayList<>();
 
         latCurrentPlace = TemporaryVariables.startPointLat;
         lngCurrentPlace = TemporaryVariables.startPointLng;
@@ -74,7 +72,7 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
 
     @Override
     protected void onStart() {
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
+        TemporaryVariables.chosenNightLifeAttractions = new ArrayList<>();
 
         loadLocations(latCurrentPlace, lngCurrentPlace);
         super.onStart();
@@ -291,7 +289,8 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
             finish();
         }else if(view == btn_calculate)
         {
-            if(TemporaryVariables.chosenAttractions.size() > 0 && TemporaryVariables.chosenAttractions.size() <= 4)
+            if(TemporaryVariables.chosenNightLifeAttractions.size() + TemporaryVariables.chosenSightSeeingAttractions.size() > 0
+                    && TemporaryVariables.chosenNightLifeAttractions.size() + TemporaryVariables.chosenSightSeeingAttractions.size() <= 4)
             {
                 Intent intent = new Intent(ShowNightLifeActivity.this,TripSummaryActivity.class);
                 startActivity(intent);

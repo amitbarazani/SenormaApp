@@ -2,6 +2,7 @@ package com.acebrico.royalcarribeanapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -35,6 +36,7 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
     EditText et_location;
     
     //
+    ProgressDialog progressDialog;
 
 
     @Override
@@ -52,8 +54,11 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
         swt_restaurant = findViewById(R.id.swt_restaurant);
         swt_sightseeing = findViewById(R.id.swt_sightseeing);
 
+        TemporaryVariables.isNightLifeChosen = false;
+        TemporaryVariables.isSightSeeingChosen = false;
+        TemporaryVariables.isRestaurantsChosen = false;
 
-        
+
 
         img_royalcarribean.setOnClickListener(this);
         btn_planTrip.setOnClickListener(this);
@@ -80,6 +85,9 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                 {
                     Toast.makeText(this, "please type a location", Toast.LENGTH_SHORT).show();
                 }else{
+                    progressDialog = new ProgressDialog(TripPlannerActivity.this);
+                    progressDialog.setTitle("getting latitude and longitude...");
+                    progressDialog.show();
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -112,24 +120,27 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
             lng = location.getLongitude();
             if(address.size() > 0)
             {
+                progressDialog.dismiss();
+                progressDialog.cancel();
                 TemporaryVariables.startPointLat = lat;
                 TemporaryVariables.startPointLng = lng;
                 TemporaryVariables.startPointName = et_location.getText().toString();
-                if(TemporaryVariables.isSightSeeingChosen && !TemporaryVariables.isRestaurantsChosen && !TemporaryVariables.isNightLifeChosen) {
+                if(TemporaryVariables.isSightSeeingChosen) {
                     Intent intent = new Intent(TripPlannerActivity.this, ShowSightSeeingActivity.class);
                     startActivity(intent);
                     finish();
-                }else if(!TemporaryVariables.isSightSeeingChosen && !TemporaryVariables.isRestaurantsChosen && TemporaryVariables.isNightLifeChosen)
+                }else if(!TemporaryVariables.isRestaurantsChosen && TemporaryVariables.isNightLifeChosen)
                 {
                     Intent intent = new Intent(TripPlannerActivity.this, ShowNightLifeActivity.class);
                     startActivity(intent);
                     finish();
-                }else if(!TemporaryVariables.isSightSeeingChosen && TemporaryVariables.isRestaurantsChosen && !TemporaryVariables.isNightLifeChosen)
+                }else if(TemporaryVariables.isRestaurantsChosen && !TemporaryVariables.isNightLifeChosen)
                 {
                     Intent intent = new Intent(TripPlannerActivity.this, ShowRestaurantsActivity.class);
                     startActivity(intent);
                     finish();
                 }
+
 
             }else{
                 Toast.makeText(this, "couldn't find place...", Toast.LENGTH_SHORT).show();
@@ -140,7 +151,8 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
             TripPlannerActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(TripPlannerActivity.this, "wifi problem: please turn on and off your airplane mode", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    Toast.makeText(TripPlannerActivity.this, "wifi problem: try to turn on and off your airplane mode", Toast.LENGTH_SHORT).show();
                 }
             });
 

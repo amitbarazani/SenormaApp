@@ -59,9 +59,6 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
         btn_save = findViewById(R.id.btn_save);
         lv_locations = findViewById(R.id.lv_locations);
-
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
-
         latCurrentPlace = TemporaryVariables.startPointLat;
         lngCurrentPlace = TemporaryVariables.startPointLng;
 
@@ -72,7 +69,6 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
 
     @Override
     protected void onStart() {
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
 
         loadLocations(latCurrentPlace, lngCurrentPlace);
         super.onStart();
@@ -121,6 +117,7 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
 
         loadingPercent = 0;
         for(int i = 0;i<locationAttractions.size();i++) {
+            locationAttractions.get(i).type = "restaurant";
             getPlaceDetails(i);
         }
 
@@ -171,7 +168,7 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
                     if(place.isOpen() != null)
                         locationAttractions.get(i).isOpen = place.isOpen();
 
-                    locationAttractions.get(i).type = "restaurant";
+
                     locationAttractions.get(i).description = place.getTypes().get(0).toString().toLowerCase().replace("_"," ");
                     locationAttractions.get(i).rating = place.getRating();
                     locationAttractions.get(i).lat = place.getLatLng().latitude;

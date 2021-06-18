@@ -30,7 +30,6 @@ public class LocationSummaryAdapter extends ArrayAdapter<LocationAttraction> {
         this.locations = data;
         this.mContext=context;
         // this.chosenAttractions = new ArrayList<>();
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
 
 
     }
@@ -66,6 +65,7 @@ public class LocationSummaryAdapter extends ArrayAdapter<LocationAttraction> {
         if(TemporaryVariables.isRestaurantsChosen)
         {
             rl_restaurants.setVisibility(View.VISIBLE);
+
         }else{
             rl_restaurants.setVisibility(View.GONE);
         }

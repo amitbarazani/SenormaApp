@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amadeus.Amadeus;
@@ -46,6 +47,10 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
     ListView lv_locations;
     Button btn_calculate;
     //
+    TextView tv_chooseupto4,tv_topsights;
+
+
+    //
     PointOfInterest[] pointsOfInterest;
     ArrayList<LocationAttraction> locationAttractions;
 
@@ -61,11 +66,25 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
         btn_calculate = findViewById(R.id.btn_calculate);
         lv_locations = findViewById(R.id.lv_locations);
+        tv_chooseupto4 = findViewById(R.id.tv_chooseupto4);
+        tv_topsights = findViewById(R.id.tv_topsights);
 
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
+
+        if(TemporaryVariables.isNightLifeChosen)
+        {
+            btn_calculate.setText("SHOW TOP NIGHT LIFE");
+            tv_topsights.setText("First Choose Top Sight Seeing In The Area");
+            tv_chooseupto4.setText("You Can Choose Up to 4 attractions(Sight Seeing and Night Life in total)");
+            TemporaryVariables.chosenNightLifeAttractions = new ArrayList<>();
+
+        }
+
+        TemporaryVariables.chosenSightSeeingAttractions = new ArrayList<>();
 
         latCurrentPlace = TemporaryVariables.startPointLat;
          lngCurrentPlace = TemporaryVariables.startPointLng;
+
+
 
         //
         img_royalcarribean.setOnClickListener(this);
@@ -74,7 +93,8 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
 
     @Override
     protected void onStart() {
-        TemporaryVariables.chosenAttractions = new ArrayList<>();
+        TemporaryVariables.chosenSightSeeingAttractions = new ArrayList<>();
+
 
         loadLocations(latCurrentPlace, lngCurrentPlace);
         super.onStart();
@@ -291,14 +311,22 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
             finish();
         }else if(view == btn_calculate)
         {
-            if(TemporaryVariables.chosenAttractions.size() > 0 && TemporaryVariables.chosenAttractions.size() <= 4)
+            if(TemporaryVariables.isNightLifeChosen)
             {
-                Intent intent = new Intent(ShowSightSeeingActivity.this,TripSummaryActivity.class);
+                Intent intent = new Intent(ShowSightSeeingActivity.this,ShowNightLifeActivity.class);
                 startActivity(intent);
                 finish();
             }else{
-                Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
+                if(TemporaryVariables.chosenSightSeeingAttractions.size() > 0 && TemporaryVariables.chosenSightSeeingAttractions.size() <= 4)
+                {
+                    Intent intent = new Intent(ShowSightSeeingActivity.this,TripSummaryActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
+                }
             }
+
         }
     }
 
