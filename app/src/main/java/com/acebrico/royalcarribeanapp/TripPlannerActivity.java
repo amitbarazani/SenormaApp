@@ -124,6 +124,11 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                     Intent intent = new Intent(TripPlannerActivity.this, ShowNightLifeActivity.class);
                     startActivity(intent);
                     finish();
+                }else if(!TemporaryVariables.isSightSeeingChosen && TemporaryVariables.isRestaurantsChosen && !TemporaryVariables.isNightLifeChosen)
+                {
+                    Intent intent = new Intent(TripPlannerActivity.this, ShowRestaurantsActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
 
             }else{

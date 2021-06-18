@@ -173,6 +173,7 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
                     if(place.isOpen() != null)
                         locationAttractions.get(i).isOpen = place.isOpen();
 
+                    locationAttractions.get(i).type = "sightseeing";
                     locationAttractions.get(i).description = place.getTypes().get(0).toString().toLowerCase().replace("_"," ");
                     locationAttractions.get(i).rating = place.getRating();
                     locationAttractions.get(i).lat = place.getLatLng().latitude;

@@ -61,7 +61,6 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         TextView tv_isOpen = (TextView)convertView.findViewById(R.id.tv_isOpen);
         TextView tv_distance = (TextView)convertView.findViewById(R.id.tv_distance);
         TextView tv_rating = (TextView)convertView.findViewById(R.id.tv_rating);
-        CheckBox cb_isLocationChosen = convertView.findViewById(R.id.cb_isLocationChosen);
         ImageView img_locationPic = (ImageView) convertView.findViewById(R.id.img_locationPic);
 
         tv_name.setText(locationAttraction.name);
@@ -79,31 +78,33 @@ public class LocationAttractionAdapter extends ArrayAdapter<LocationAttraction> 
         img_locationPic.setImageBitmap(locationAttraction.pictureBitmap);
 
 
-        cb_isLocationChosen.setOnCheckedChangeListener(null);
-        cb_isLocationChosen.setFocusable(false);
-        if (locations.get(position).isChosen) {
-            cb_isLocationChosen.setChecked(true);
-        } else {
-            cb_isLocationChosen.setChecked(false);
-        }
-        cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(TemporaryVariables.chosenAttractions.size() < 4) {
-                    if (b) {
-                        TemporaryVariables.chosenAttractions.add(locationAttraction);
-                        locations.get(position).isChosen = true;
-                    } else {
-                        TemporaryVariables.chosenAttractions.remove(locationAttraction);
-                        locations.get(position).isChosen = false;
-                    }
-                }else{
-                    Toast.makeText(mContext, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
-                    cb_isLocationChosen.setChecked(false);
-                }
+        if(locationAttraction.type.equals("restaurant")) {
+            CheckBox cb_isLocationChosen = convertView.findViewById(R.id.cb_isLocationChosen);
+            cb_isLocationChosen.setOnCheckedChangeListener(null);
+            cb_isLocationChosen.setFocusable(false);
+            if (locations.get(position).isChosen) {
+                cb_isLocationChosen.setChecked(true);
+            } else {
+                cb_isLocationChosen.setChecked(false);
             }
-        });
-
+            cb_isLocationChosen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (TemporaryVariables.chosenAttractions.size() < 4) {
+                        if (b) {
+                            TemporaryVariables.chosenAttractions.add(locationAttraction);
+                            locations.get(position).isChosen = true;
+                        } else {
+                            TemporaryVariables.chosenAttractions.remove(locationAttraction);
+                            locations.get(position).isChosen = false;
+                        }
+                    } else {
+                        Toast.makeText(mContext, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
+                        cb_isLocationChosen.setChecked(false);
+                    }
+                }
+            });
+        }
 
         viewGroup = parent;
 

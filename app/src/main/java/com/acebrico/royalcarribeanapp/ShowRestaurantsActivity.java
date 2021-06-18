@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,17 +33,16 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ShowNightLifeActivity extends AppCompatActivity implements View.OnClickListener {
+public class ShowRestaurantsActivity extends AppCompatActivity implements View.OnClickListener{
     ImageView img_royalcarribean;
     ListView lv_locations;
-    Button btn_calculate;
+    Button btn_save;
     //
     PointOfInterest[] pointsOfInterest;
     ArrayList<LocationAttraction> locationAttractions;
@@ -57,9 +55,9 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_night_life);
+        setContentView(R.layout.activity_show_restaurants);
         img_royalcarribean = findViewById(R.id.img_royalcarribean);
-        btn_calculate = findViewById(R.id.btn_calculate);
+        btn_save = findViewById(R.id.btn_save);
         lv_locations = findViewById(R.id.lv_locations);
 
         TemporaryVariables.chosenAttractions = new ArrayList<>();
@@ -69,7 +67,7 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
 
         //
         img_royalcarribean.setOnClickListener(this);
-        btn_calculate.setOnClickListener(this);
+        btn_save.setOnClickListener(this);
     }
 
     @Override
@@ -86,7 +84,7 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
         progressLoadingAttractions.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                Toast.makeText(ShowNightLifeActivity.this, "canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ShowRestaurantsActivity.this, "canceled", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -101,7 +99,7 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
             pointsOfInterest = amadeus.referenceData.locations.pointsOfInterest.get(Params
                     .with("latitude", lat)
                     .and("longitude", lng)
-                    .and("category", "NIGHTLIFE"));
+                    .and("category", "RESTAURANT"));
         } catch (ResponseException e) {
             e.printStackTrace();
             progressLoadingAttractions.dismiss();
@@ -173,7 +171,7 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
                     if(place.isOpen() != null)
                         locationAttractions.get(i).isOpen = place.isOpen();
 
-                    locationAttractions.get(i).type = "nightlife";
+                    locationAttractions.get(i).type = "restaurant";
                     locationAttractions.get(i).description = place.getTypes().get(0).toString().toLowerCase().replace("_"," ");
                     locationAttractions.get(i).rating = place.getRating();
                     locationAttractions.get(i).lat = place.getLatLng().latitude;
@@ -219,11 +217,11 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
                                     }
                                 });
                                 Collections.reverse(locationAttractions);
-                                LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowNightLifeActivity.this);
+                                LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowRestaurantsActivity.this);
                                 lv_locations.setAdapter(locationAttractionAdapter);
                                 progressLoadingAttractions.dismiss();
                             }else{
-                                Toast.makeText(ShowNightLifeActivity.this, "There was a problem loading your locations... please try again and check your wifi..", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ShowRestaurantsActivity.this, "There was a problem loading your locations... please try again and check your wifi..", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -286,19 +284,12 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         if(view == img_royalcarribean)
         {
-            Intent intent = new Intent(ShowNightLifeActivity.this,MenuClientActivity.class);
+            Intent intent = new Intent(ShowRestaurantsActivity.this,MenuClientActivity.class);
             startActivity(intent);
             finish();
-        }else if(view == btn_calculate)
+        }else if(view == btn_save)
         {
-            if(TemporaryVariables.chosenAttractions.size() > 0 && TemporaryVariables.chosenAttractions.size() <= 4)
-            {
-                Intent intent = new Intent(ShowNightLifeActivity.this,TripSummaryActivity.class);
-                startActivity(intent);
-                finish();
-            }else{
-                Toast.makeText(this, "please choose at least 1 activity and less then 4 activities.", Toast.LENGTH_SHORT).show();
-            }
+
         }
     }
 
