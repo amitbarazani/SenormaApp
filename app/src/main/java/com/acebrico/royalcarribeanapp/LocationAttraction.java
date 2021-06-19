@@ -22,6 +22,8 @@ public class LocationAttraction
     public Boolean isChosen = false;
     public Bitmap pictureBitmap = null;
    // public byte[] pictureBytes;
+    public String restaurantName1;
+    public String restaurantName2;
     public String type;
 
     public LocationAttraction(String name,Double lat,Double lng, Double rating, String description, Boolean isOpen, Boolean isChosen) {
@@ -52,18 +54,22 @@ public class LocationAttraction
 
      */
 
-    @Override
-    public String toString() {
-        return "LocationAttraction{" +
-                "name='" + name + '\'' +
-                ", lng=" + lng +
-                ", lat=" + lat +
-                ", rating=" + rating +
-                ", description='" + description + '\'' +
-                ", isOpen=" + isOpen +
-                ", isChosen=" + isChosen
-                + '}';
-    }
+        @Override
+        public String toString() {
+            return "LocationAttraction{" +
+                    "name='" + name + '\'' +
+                    ", lng=" + lng +
+                    ", lat=" + lat +
+                    ", distanceFromCurrentPlace=" + distanceFromCurrentPlace +
+                    ", rating=" + rating +
+                    ", description='" + description + '\'' +
+                    ", isOpen=" + isOpen +
+                    ", isChosen=" + isChosen +
+                    ", restaurantName1='" + restaurantName1 + '\'' +
+                    ", restaurantName2='" + restaurantName2 + '\'' +
+                    ", type='" + type + '\'' +
+                    '}';
+        }
 
     /*
     @Override

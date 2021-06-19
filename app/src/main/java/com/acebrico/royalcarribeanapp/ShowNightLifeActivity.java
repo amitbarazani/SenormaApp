@@ -60,7 +60,12 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
         btn_calculate = findViewById(R.id.btn_calculate);
         lv_locations = findViewById(R.id.lv_locations);
 
+        if(!TemporaryVariables.isSightSeeingChosen)
+        {
+            TemporaryVariables.chosenSightSeeingAttractions = new ArrayList<>();
+        }
         TemporaryVariables.chosenNightLifeAttractions = new ArrayList<>();
+
 
         latCurrentPlace = TemporaryVariables.startPointLat;
         lngCurrentPlace = TemporaryVariables.startPointLng;
@@ -72,7 +77,6 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
 
     @Override
     protected void onStart() {
-        TemporaryVariables.chosenNightLifeAttractions = new ArrayList<>();
 
         loadLocations(latCurrentPlace, lngCurrentPlace);
         super.onStart();

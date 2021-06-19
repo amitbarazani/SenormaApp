@@ -65,7 +65,8 @@ public class LocationSummaryAdapter extends ArrayAdapter<LocationAttraction> {
         if(TemporaryVariables.isRestaurantsChosen)
         {
             rl_restaurants.setVisibility(View.VISIBLE);
-
+            tv_restaurantName1.setText(locationAttraction.restaurantName1);
+            tv_restaurantName2.setText(locationAttraction.restaurantName2);
         }else{
             rl_restaurants.setVisibility(View.GONE);
         }

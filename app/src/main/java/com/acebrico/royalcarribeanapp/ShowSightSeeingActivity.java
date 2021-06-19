@@ -75,10 +75,10 @@ public class ShowSightSeeingActivity extends AppCompatActivity implements View.O
             btn_calculate.setText("SHOW TOP NIGHT LIFE");
             tv_topsights.setText("First Choose Top Sight Seeing In The Area");
             tv_chooseupto4.setText("You Can Choose Up to 4 attractions(Sight Seeing and Night Life in total)");
-            TemporaryVariables.chosenNightLifeAttractions = new ArrayList<>();
 
         }
 
+        TemporaryVariables.chosenNightLifeAttractions = new ArrayList<>();
         TemporaryVariables.chosenSightSeeingAttractions = new ArrayList<>();
 
         latCurrentPlace = TemporaryVariables.startPointLat;

@@ -1,5 +1,6 @@
 package com.acebrico.royalcarribeanapp;
 
+import androidx.annotation.WorkerThread;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -137,6 +138,11 @@ public class TripPlannerActivity extends AppCompatActivity implements View.OnCli
                 }else if(TemporaryVariables.isRestaurantsChosen && !TemporaryVariables.isNightLifeChosen)
                 {
                     Intent intent = new Intent(TripPlannerActivity.this, ShowRestaurantsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else if(TemporaryVariables.isRestaurantsChosen)
+                {
+                    Intent intent = new Intent(TripPlannerActivity.this, ShowNightLifeActivity.class);
                     startActivity(intent);
                     finish();
                 }

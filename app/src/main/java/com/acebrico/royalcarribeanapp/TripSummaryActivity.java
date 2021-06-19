@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -20,6 +21,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amadeus.Amadeus;
+import com.amadeus.Params;
+import com.amadeus.exceptions.ResponseException;
+import com.amadeus.resources.PointOfInterest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,27 +59,24 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         tv_startPoint.setText(TemporaryVariables.startPointName);
         tv_endPoint.setText(TemporaryVariables.startPointName);
 
-        if(TemporaryVariables.isNightLifeChosen && !TemporaryVariables.isSightSeeingChosen)
+        chosenAttractions = new ArrayList<>();
+
+        Log.d("TAG", TemporaryVariables.tostring());
+        if(TemporaryVariables.chosenNightLifeAttractions.size() > 0)
         {
-            chosenAttractions = TemporaryVariables.chosenNightLifeAttractions;
-        }else if(!TemporaryVariables.isNightLifeChosen && TemporaryVariables.isSightSeeingChosen)
-        {
-            chosenAttractions = TemporaryVariables.chosenSightSeeingAttractions;
-            sortAttractions(chosenAttractions);
-            updateDistances(chosenAttractions);
-        }else{
-            sortAttractions(TemporaryVariables.chosenSightSeeingAttractions);
-            updateDistances(TemporaryVariables.chosenSightSeeingAttractions);
             sortAttractions(TemporaryVariables.chosenNightLifeAttractions);
             updateDistances(TemporaryVariables.chosenNightLifeAttractions);
-            chosenAttractions = new ArrayList<>();
-            TemporaryVariables.chosenSightSeeingAttractions.forEach(new Consumer<LocationAttraction>() {
+            TemporaryVariables.chosenNightLifeAttractions.forEach(new Consumer<LocationAttraction>() {
                 @Override
                 public void accept(LocationAttraction locationAttraction) {
                     chosenAttractions.add(locationAttraction);
                 }
             });
-            TemporaryVariables.chosenNightLifeAttractions.forEach(new Consumer<LocationAttraction>() {
+        }
+        if(TemporaryVariables.chosenSightSeeingAttractions.size() > 0){
+            sortAttractions(TemporaryVariables.chosenSightSeeingAttractions);
+            updateDistances(TemporaryVariables.chosenSightSeeingAttractions);
+            TemporaryVariables.chosenSightSeeingAttractions.forEach(new Consumer<LocationAttraction>() {
                 @Override
                 public void accept(LocationAttraction locationAttraction) {
                     chosenAttractions.add(locationAttraction);
@@ -82,9 +85,70 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         }
 
 
+        if(TemporaryVariables.isRestaurantsChosen)
+        {
+            ProgressDialog progressDialog = new ProgressDialog(TripSummaryActivity.this);
+            progressDialog.setTitle("Loading Restaurants");
+            progressDialog.show();
+            PointOfInterest[] pointsOfInterest;
+
+            ArrayList<LocationAttraction> restaurants = new ArrayList<>();
+            Amadeus amadeus = Amadeus
+                    .builder("xzDnM1eqDw4TlRIjAdqQ4LOxbZ015ida", "OBXSABf3MkqJD2ob")
+                    .build();
+            try {
+                pointsOfInterest = amadeus.referenceData.locations.pointsOfInterest.get(Params
+                        .with("latitude", TemporaryVariables.startPointLat)
+                        .and("longitude", TemporaryVariables.startPointLng)
+                        .and("category", "RESTAURANT"));
+
+            } catch (ResponseException e) {
+                e.printStackTrace();
+                progressDialog.dismiss();
+                Toast.makeText(this, "not found restaurants", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            for (PointOfInterest point : pointsOfInterest) {
+                if (point != null) {
+                    //Log.d("TAG", "point:" + point.toString());
+                    LocationAttraction templocation = new LocationAttraction();
+                    templocation.name = point.getName();
+                    templocation.lat = point.getGeoCode().getLatitude();
+                    templocation.lng = point.getGeoCode().getLongitude();
+
+                    restaurants.add(templocation);
+                }
+            }
+            chosenAttractions.forEach(new Consumer<LocationAttraction>() {
+                @Override
+                public void accept(LocationAttraction locationAttraction) {
+                    restaurants.forEach(new Consumer<LocationAttraction>() {
+                        @Override
+                        public void accept(LocationAttraction restaurant) {
+                            restaurant.distanceFromCurrentPlace = distanceBetweenTwoLocations(locationAttraction,restaurant);
+                        }
+                    });
+                    Collections.sort(restaurants, new Comparator<LocationAttraction>() {
+                        @Override
+                        public int compare(LocationAttraction restaurant1, LocationAttraction restaurant2) {
+                            Double temp1 = restaurant1.distanceFromCurrentPlace;
+                            Double temp2 = restaurant2.distanceFromCurrentPlace;
+                            return temp1.compareTo(temp2);
+                        }
+                    });
+                    locationAttraction.restaurantName1 = restaurants.get(0).name;
+                    locationAttraction.restaurantName2 = restaurants.get(1).name;
+                    restaurants.remove(0);
+                    restaurants.remove(1);
+
+                }
+            });
+            progressDialog.dismiss();
+
+        }
 
 
-
+        Log.d("TAG", "chosen attractions end:"+chosenAttractions);
         LocationSummaryAdapter locationSummaryAdapter = new LocationSummaryAdapter(
                 chosenAttractions,TripSummaryActivity.this);
         lv_locations.setAdapter(locationSummaryAdapter);
@@ -235,7 +299,6 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    //TODO: not working, needs to be fixed
     private void saveScreenshot() {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},00);
 
