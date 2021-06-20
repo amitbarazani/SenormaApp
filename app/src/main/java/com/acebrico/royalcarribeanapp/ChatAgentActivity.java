@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -96,6 +97,13 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
         progressPictureAndChats = new ProgressDialog(this);
         progressPictureAndChats.setTitle("Loading data...");
         progressPictureAndChats.show();
+        progressPictureAndChats.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                startActivity(new Intent(ChatAgentActivity.this,MenuAgentActivity.class));
+                finish();
+            }
+        });
         loadPicture();
         //
         if(currentUserAuth == null)
@@ -183,7 +191,6 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
                                 lv_pickChat.setAdapter(pickChatAdapter);
                                 lv_pickChat.setOnItemClickListener(ChatAgentActivity.this);
                                 progressPictureAndChats.dismiss();
-                                //Toast.makeText(ChatClientActivity.this, "loaded", Toast.LENGTH_SHORT).show();
 
                             }else{
                                 progressPictureAndChats.dismiss();
@@ -310,7 +317,6 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                                 {
-
                                     // Image uploaded successfully
                                     // Dismiss dialog
                                     progressDialog.dismiss();
@@ -348,7 +354,6 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //Toast.makeText(this, "chosen:"+users.get(i).fullName, Toast.LENGTH_SHORT).show();
         if(adapterView == lv_pickChat) {
             messageWith = users.get(i);
             rl_pickScreen.setVisibility(View.GONE);
@@ -356,9 +361,6 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
             tv_talkingWith.setText(messageWith.fullName);
             loadImagesAndMessages();
 
-
-        }else if(view == lv_chat)
-        {
 
         }
 

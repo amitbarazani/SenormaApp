@@ -135,48 +135,15 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
     {
         if(dataSnapshot.exists())
         {
-            //Log.d("TAG", "showReservations: "+dataSnapshot.getValue());
             final Reservation tempReservation =dataSnapshot.getValue(Reservation.class);
-            //Log.d("TAG", "temp reservation:"+tempReservation.toString());
             TableRow reservationRow = new TableRow(ProfileClientActivity.this);
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
             reservationRow.setLayoutParams(lp);
-           // reservationRow.setHorizontalScrollBarEnabled(false);
-           // reservationRow.setVerticalScrollBarEnabled(true);
-
-
-            /*
-            ExpandableListView expandableListView = new ExpandableListView(this);
-            expandableListView.setAdapter(new ReservationDetailsAdapter(this,tempReservation));
-             */
-
-
-            /*
-            Button btn_expand = new Button(this);
-            btn_expand.setPadding(0,0,16,0);
-            btn_expand.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    View expandDetails = null;
-                    expandDetails = loadDetails(expandDetails,tempReservation);
-
-                    TableRow reservationDetailsRow = new TableRow(ProfileClientActivity.this);
-                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                    reservationDetailsRow.setLayoutParams(lp);
-                    reservationDetailsRow.addView(expandDetails);
-                    tbl_reservations.addView(reservationDetailsRow,counter);
-                    //tbl_reservations.removeView(reservationDetailsRow);
-                    toggle_contents(view,reservationDetailsRow);
-                }
-            });
-            
-             */
 
 
             ImageView img_moreDetails = new ImageView(this);
             img_moreDetails.setImageDrawable(getDrawable(R.drawable.help));
-            //img_moreDetails.setLayoutParams(new TableRow.LayoutParams(32,32));
-            //img_moreDetails.setLayoutParams(new );
+
             img_moreDetails.setAdjustViewBounds(true);
             img_moreDetails.setScaleType(ImageView.ScaleType.FIT_CENTER);
             img_moreDetails.setOnClickListener(new View.OnClickListener() {
@@ -204,16 +171,13 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
             tvRow_agentEmail.setText(tempReservation.AgentEmail);
 
 
-           // reservationRow.addView(expandableListView);
-           // reservationRow.addView(btn_expand);
+
 
             reservationRow.addView(img_moreDetails,new TableRow.LayoutParams(120,120));
             reservationRow.addView(tvRow_reservationNumber);
             reservationRow.addView(tvRow_status);
             reservationRow.addView(tvRow_agent);
             reservationRow.addView(tvRow_agentEmail);
-            //reservationRow.setDividerDrawable(new ColorDrawable(Color.BLACK));
-            //reservationRow.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
             reservationRow.setPadding(0,20,0,20);
 
             tbl_reservations.addView(reservationRow,counter);
@@ -227,7 +191,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
 
     private void createDetailsDialog(Reservation reservation)
     {
-        View view = new View(this);
+        View view;
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.item_reservation_details, null);
 
@@ -250,73 +214,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
 
     }
 
-    /*
 
-    public View loadDetails(View view,Reservation tempReservation) {
-        //String listTitle = (String) getGroup(i);
-        if (view == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.item_reservation_details, null);
-        }
-
-        TextView tv_ship = (TextView) view.findViewById(R.id.tv_ship);
-        TextView tv_roomType = (TextView) view.findViewById(R.id.tv_roomType);
-        TextView tv_leavingFrom = (TextView) view.findViewById(R.id.tv_leavingFrom);
-        TextView tv_visiting = (TextView) view.findViewById(R.id.tv_visiting);
-        TextView tv_returningTo = (TextView) view.findViewById(R.id.tv_returningTo);
-        TextView tv_price = (TextView) view.findViewById(R.id.tv_price);
-
-        tv_ship.setText(tempReservation.ship);
-        tv_roomType.setText("ROOM TYPE:"+tempReservation.roomCategory);
-        tv_leavingFrom.setText("LEAVING FROM:"+tempReservation.departsFrom+","+tempReservation.departsAt);
-        tv_visiting.setText("VISITING:"+tempReservation.stopPlace+","+tempReservation.stopTime);
-        tv_returningTo.setText("RETURNING TO:"+tempReservation.ArriveTo+","+tempReservation.ArriveAt);
-        tv_price.setText(tempReservation.Price);
-
-        return view;
-    }
-
-
-
-
-    public static void slide_down(Context ctx, View v) {
-
-        Animation a = AnimationUtils.loadAnimation(ctx, R.anim.slide_down);
-        if (a != null) {
-            a.reset();
-            if (v != null) {
-                v.clearAnimation();
-                v.startAnimation(a);
-            }
-        }
-    }
-    public static void slide_up(Context ctx, View v) {
-
-        Animation a = AnimationUtils.loadAnimation(ctx, R.anim.slide_up);
-        if (a != null) {
-            a.reset();
-            if (v != null) {
-                v.clearAnimation();
-                v.startAnimation(a);
-            }
-        }
-    }
-
-    public void toggle_contents(View expandButton,View expandLayout){
-
-        if(expandLayout.isShown()){
-            slide_up(this,expandButton);
-            expandLayout.setVisibility(View.GONE);
-        }
-        else{
-            expandLayout.setVisibility(View.VISIBLE);
-            slide_down(this, expandButton);
-        }
-    }
-
-
-
-     */
 
 
 

@@ -169,17 +169,11 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
             TextView tvRow_clientEmail = new TextView(this);
             tvRow_clientEmail.setText(tempReservation.ClientEmail);
 
-
-            // reservationRow.addView(expandableListView);
-            // reservationRow.addView(btn_expand);
-
             reservationRow.addView(img_moreDetails,new TableRow.LayoutParams(120,120));
             reservationRow.addView(tvRow_reservationNumber);
             reservationRow.addView(tvRow_status);
             reservationRow.addView(tvRow_client);
             reservationRow.addView(tvRow_clientEmail);
-            //reservationRow.setDividerDrawable(new ColorDrawable(Color.BLACK));
-            //reservationRow.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
             reservationRow.setPadding(0,20,0,20);
 
             tbl_reservations.addView(reservationRow,counter);

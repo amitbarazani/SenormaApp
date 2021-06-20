@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.accessibilityservice.AccessibilityService;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -107,6 +108,13 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
         progressPictureAndChats = new ProgressDialog(this);
         progressPictureAndChats.setTitle("Loading data...");
         progressPictureAndChats.show();
+        progressPictureAndChats.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                startActivity(new Intent(ChatClientActivity.this,MenuClientActivity.class));
+                finish();
+            }
+        });
         loadPicture();
         //
         if(currentUserAuth == null)
@@ -361,9 +369,6 @@ public class ChatClientActivity extends AppCompatActivity implements View.OnClic
             tv_talkingWith.setText(messageWith.fullName);
             loadImagesAndMessages();
 
-
-        }else if(view == lv_chat)
-        {
 
         }
 
