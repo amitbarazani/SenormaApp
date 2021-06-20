@@ -72,6 +72,7 @@ public class MenuClientActivity extends AppCompatActivity implements View.OnClic
             mAuth.signOut();
             sp.edit().clear().apply();
             startActivity(new Intent(MenuClientActivity.this,MainActivity.class));
+            finish();
         }else if(view == btn_chat){
             startActivity(new Intent(MenuClientActivity.this,ChatClientActivity.class));
         }else if(view == btn_tripPlanner)

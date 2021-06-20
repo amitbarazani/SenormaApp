@@ -161,8 +161,8 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
                     });
                     locationAttraction.restaurantName1 = restaurants.get(0).name;
                     locationAttraction.restaurantName2 = restaurants.get(1).name;
-                    restaurants.remove(restaurants.get(0));
-                    restaurants.remove(restaurants.get(1));
+                    restaurants.remove(0);
+                    restaurants.remove(0);
                     Log.d("TAG", "restaurants size:"+restaurants.toString());
 
 

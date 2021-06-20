@@ -46,6 +46,7 @@ public class MenuAgentActivity extends AppCompatActivity implements View.OnClick
             sp.edit().clear().apply();
 
             startActivity(new Intent(MenuAgentActivity.this,MainActivity.class));
+            finish();
 
         }else if(view == btn_profile)
         {

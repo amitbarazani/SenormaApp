@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     ImageView img_royalcarribean;
     EditText et_email,et_password,et_fullname,et_id;
     Button btn_signUp;
+    TextView tv_signin;
     //firebase
     FirebaseAuth mAuth;
     String role;
@@ -41,10 +43,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         et_password = findViewById(R.id.et_password);
         et_id = findViewById(R.id.et_id);
         et_fullname = findViewById(R.id.et_fullname);
+        tv_signin = findViewById(R.id.tv_signin);
         role = getIntent().getExtras().getString("role");
 
         mAuth = FirebaseAuth.getInstance();
 
+        tv_signin.setOnClickListener(this);
         btn_signUp.setOnClickListener(this);
         img_royalcarribean.setOnClickListener(this);
 
@@ -76,6 +80,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             } else {
                 Toast.makeText(this, "there are some empty fields", Toast.LENGTH_SHORT).show();
             }
+        }else if(view == tv_signin)
+        {
+            Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 

@@ -138,7 +138,7 @@
         android:layout_alignStart="@+id/et_password"
         />
     <TextView
-        android:id="@+id/tv_signip"
+        android:id="@+id/tv_signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign in Here"

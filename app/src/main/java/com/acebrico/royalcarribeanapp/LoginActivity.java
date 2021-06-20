@@ -32,6 +32,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button btn_login;
     EditText et_email,et_password;
     TextView tv_signup;
+    TextView tv_forgotpassword;
+
+    //
+    Boolean isOnForgotPasswordMode;
 
     //firebase
     FirebaseAuth mAuth;
@@ -45,15 +49,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         et_email = findViewById(R.id.et_email);
         et_password = findViewById(R.id.et_password);
         tv_signup = findViewById(R.id.tv_signup);
+        tv_forgotpassword = findViewById(R.id.tv_forgotpassword);
 
+        isOnForgotPasswordMode = false;
 
         btn_login.setOnClickListener(this);
         img_royalcarribean.setOnClickListener(this);
         tv_signup.setOnClickListener(this);
+        tv_forgotpassword.setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
 
     }
+
+
 
     @Override
     public void onClick(View view) {
@@ -65,18 +74,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }else if(view == btn_login)
         {
-            if(!et_email.getText().toString().equals("") &&
-                    !et_password.getText().toString().equals(""))
-            {
-                signIn(et_email.getText().toString(),et_password.getText().toString());
+            if(!isOnForgotPasswordMode) {
+                if (!et_email.getText().toString().equals("") &&
+                        !et_password.getText().toString().equals("")) {
+                    signIn(et_email.getText().toString(), et_password.getText().toString());
+                } else {
+                    Toast.makeText(this, "you didn't fill all of the fields...", Toast.LENGTH_SHORT).show();
+                }
             }else{
-                Toast.makeText(this, "you didn't fill all of the fields...", Toast.LENGTH_SHORT).show();
+                if(!et_email.getText().toString().equals(""))
+                {
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(et_email.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                            {
+                                Toast.makeText(LoginActivity.this, "mail sent successfully.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(LoginActivity.this, "mail hasn't sent, please contact the developer.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }else{
+                    Toast.makeText(this, "please write an email.", Toast.LENGTH_SHORT).show();
+                }
             }
         }else if(view == tv_signup)
         {
             Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
             intent.putExtra("role",getIntent().getExtras().getString("role"));
             startActivity(intent);
+        }
+        else if(view == tv_forgotpassword)
+        {
+            if(!isOnForgotPasswordMode) {
+                isOnForgotPasswordMode = true;
+                et_password.setVisibility(View.GONE);
+                findViewById(R.id.tv_password).setVisibility(View.INVISIBLE);
+                btn_login.setText("Send Reset Pass");
+                tv_forgotpassword.setText("Login");
+            }else{
+                isOnForgotPasswordMode = false;
+                et_password.setVisibility(View.VISIBLE);
+                findViewById(R.id.tv_password).setVisibility(View.VISIBLE);
+                btn_login.setText("Log In");
+                tv_forgotpassword.setText("Forgot Password?");
+            }
         }
     }
 
