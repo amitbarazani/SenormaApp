@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,6 +40,8 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
     FirebaseDatabase db;
     //variables
     ArrayList<Reservation> reservations;
+    Boolean foundReservations;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +66,25 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
         getUserDetails();
         //
         reservations = new ArrayList<>();
+        foundReservations = false;
         db.getReference("Reservations/").orderByChild("idClient").equalTo(user.idNumber).addChildEventListener(reservationListener);
-        //^close the listener
 
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(!foundReservations) {
+                    db.getReference("Reservations/").orderByChild("idClient").equalTo(user.idNumber).removeEventListener(reservationListener);
+                    Toast.makeText(ProfileClientActivity.this, "didn't find any reservations...", Toast.LENGTH_SHORT).show();
+                    prg_profileClient.setVisibility(View.GONE);
+                    tv_email.setVisibility(View.VISIBLE);
+                    tv_id.setVisibility(View.VISIBLE);
+                    tv_name.setVisibility(View.VISIBLE);
+                    tbl_reservations.setVisibility(View.GONE);
+                }
+            }
+        },4000);
         //
         tv_id.setText("ID number:"+user.idNumber);
         tv_email.setText("Email:"+user.email);
@@ -80,6 +99,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             if(snapshot.exists())
             {
+                foundReservations = true;
                 prg_profileClient.setVisibility(View.GONE);
                 tv_email.setVisibility(View.VISIBLE);
                 tv_id.setVisibility(View.VISIBLE);
@@ -297,6 +317,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
 
 
      */
+
 
 
     SharedPreferences sp;

@@ -47,6 +47,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
     ArrayList<LocationAttraction> chosenAttractions;
     //
     ArrayList<LocationAttraction> findClosestToLastSightArray;
+    ArrayList<LocationAttraction> restaurants;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +114,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
             progressDialog.show();
             PointOfInterest[] pointsOfInterest;
 
-            ArrayList<LocationAttraction> restaurants = new ArrayList<>();
+            restaurants = new ArrayList<>();
             Amadeus amadeus = Amadeus
                     .builder("xzDnM1eqDw4TlRIjAdqQ4LOxbZ015ida", "OBXSABf3MkqJD2ob")
                     .build();
@@ -131,13 +132,14 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
             }
             for (PointOfInterest point : pointsOfInterest) {
                 if (point != null) {
-                    //Log.d("TAG", "point:" + point.toString());
+                    Log.d("TAG", "restaurant:" + point.toString());
                     LocationAttraction templocation = new LocationAttraction();
                     templocation.name = point.getName();
                     templocation.lat = point.getGeoCode().getLatitude();
                     templocation.lng = point.getGeoCode().getLongitude();
 
                     restaurants.add(templocation);
+
                 }
             }
             chosenAttractions.forEach(new Consumer<LocationAttraction>() {
@@ -159,8 +161,10 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
                     });
                     locationAttraction.restaurantName1 = restaurants.get(0).name;
                     locationAttraction.restaurantName2 = restaurants.get(1).name;
-                    restaurants.remove(0);
-                    restaurants.remove(1);
+                    restaurants.remove(restaurants.get(0));
+                    restaurants.remove(restaurants.get(1));
+                    Log.d("TAG", "restaurants size:"+restaurants.toString());
+
 
                 }
             });

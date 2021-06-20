@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,7 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
     FirebaseDatabase db;
     //variables
     ArrayList<Reservation> reservations;
-
+    Boolean foundReservations;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +65,23 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
         getUserDetails();
         //
         reservations = new ArrayList<>();
+        foundReservations = false;
         db.getReference("Reservations/").orderByChild("IDAgent").equalTo(Integer.parseInt(user.idNumber)).addChildEventListener(reservationListener);
-        //^close the listener
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(!foundReservations) {
+                    db.getReference("Reservations/").orderByChild("IDAgent").equalTo(Integer.parseInt(user.idNumber)).removeEventListener(reservationListener);
+                    Toast.makeText(ProfileAgentActivity.this, "didn't find any reservations...", Toast.LENGTH_SHORT).show();
+                    prg_profileAgent.setVisibility(View.GONE);
+                    tv_email.setVisibility(View.VISIBLE);
+                    tv_id.setVisibility(View.VISIBLE);
+                    tv_name.setVisibility(View.VISIBLE);
+                    tbl_reservations.setVisibility(View.GONE);
+                }
+            }
+        },4000);
 
         //
         tv_id.setText("ID number:"+user.idNumber);
@@ -81,6 +97,7 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             if(snapshot.exists())
             {
+                foundReservations = true;
                 prg_profileAgent.setVisibility(View.GONE);
                 tv_email.setVisibility(View.VISIBLE);
                 tv_id.setVisibility(View.VISIBLE);
@@ -234,7 +251,7 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     protected void onStop() {
-       // db.getReference("Reservations/").orderByChild("IDAgent").equalTo(user.idNumber).removeEventListener(reservationListener);
+        db.getReference("Reservations/").orderByChild("IDAgent").equalTo(user.idNumber).removeEventListener(reservationListener);
         super.onStop();
     }
 }
