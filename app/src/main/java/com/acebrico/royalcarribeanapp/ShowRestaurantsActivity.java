@@ -133,15 +133,12 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
 
 
         loadingPercent = 0;
-        for(int i = 0;i<locationAttractions.size();i++) {
-            locationAttractions.get(i).type = "restaurant";
-            getPlaceDetails(i);
-        }
+        getPlaceDetails(counter);
 
 
     }
 
-    //    Integer counter = 0;
+    Integer counter = 0;
     public void getPlaceDetails(Integer i) {
 
 
@@ -176,16 +173,13 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
                         ,Place.Field.LAT_LNG,Place.Field.ADDRESS,Place.Field.PHOTO_METADATAS
                         ,Place.Field.OPENING_HOURS,Place.Field.RATING,Place.Field.TYPES,Place.Field.UTC_OFFSET);
                 final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
-
-
-
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place place = response.getPlace();
                     Log.i("TAG", "Place found: " + place.getName() + ","+place.getRating()+","+place.getAddress()+","+place.isOpen()+","+place.getTypes());
                     if(place.isOpen() != null)
                         locationAttractions.get(i).isOpen = place.isOpen();
 
-
+                    locationAttractions.get(i).type = "restaurant";
                     locationAttractions.get(i).description = place.getTypes().get(0).toString().toLowerCase().replace("_"," ");
                     locationAttractions.get(i).rating = place.getRating();
                     locationAttractions.get(i).lat = place.getLatLng().latitude;
@@ -201,6 +195,8 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
                         loadingPercent +=10;
                         progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
                         Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
+                        counter++;
+                        getPlaceDetails(counter);
                         return;
                     }
                     final PhotoMetadata photoMetadata = metadata.get(0);
@@ -210,7 +206,8 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
                     final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
                             .build();
                     placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                        locationAttractions.get(i).pictureBitmap = fetchPhotoResponse.getBitmap();
+                        Bitmap pictureBitmap = fetchPhotoResponse.getBitmap();
+                        locationAttractions.get(i).pictureBitmap = pictureBitmap;
                         Log.d("TAG", "location attraction:"+locationAttractions.get(i).toString());
 
                         if(i != locationAttractions.size()-1)
@@ -218,27 +215,21 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
                             loadingPercent +=10;
                             progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
                             Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
+                            counter++;
+                            getPlaceDetails(counter);
                         }else{
-
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
+                            Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
                                 @Override
-                                public void run() {
-                                    Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
-                                        @Override
-                                        public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
-                                            Double temp1 = locationAttraction.rating / locationAttraction.distanceFromCurrentPlace;
-                                            Double temp2 = t1.rating / t1.distanceFromCurrentPlace;
-                                            return temp1.compareTo(temp2);
-                                        }
-                                    });
-                                    Collections.reverse(locationAttractions);
-                                    LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowRestaurantsActivity.this);
-                                    lv_locations.setAdapter(locationAttractionAdapter);
-                                    progressLoadingAttractions.dismiss();
+                                public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
+                                    Double temp1 = locationAttraction.rating / locationAttraction.distanceFromCurrentPlace;
+                                    Double temp2 = t1.rating / t1.distanceFromCurrentPlace;
+                                    return temp1.compareTo(temp2);
                                 }
-                            }, 2000);
-
+                            });
+                            Collections.reverse(locationAttractions);
+                            LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowRestaurantsActivity.this);
+                            lv_locations.setAdapter(locationAttractionAdapter);
+                            progressLoadingAttractions.dismiss();
                         }
 
                     }).addOnFailureListener((exception) -> {

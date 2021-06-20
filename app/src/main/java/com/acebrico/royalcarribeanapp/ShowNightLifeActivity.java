@@ -124,14 +124,12 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
 
 
         loadingPercent = 0;
-        for(int i = 0;i<locationAttractions.size();i++) {
-            getPlaceDetails(i);
-        }
+        getPlaceDetails(counter);
 
 
     }
 
-    //    Integer counter = 0;
+    Integer counter = 0;
     public void getPlaceDetails(Integer i) {
 
 
@@ -166,9 +164,6 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
                         ,Place.Field.LAT_LNG,Place.Field.ADDRESS,Place.Field.PHOTO_METADATAS
                         ,Place.Field.OPENING_HOURS,Place.Field.RATING,Place.Field.TYPES,Place.Field.UTC_OFFSET);
                 final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
-
-
-
                 placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
                     Place place = response.getPlace();
                     Log.i("TAG", "Place found: " + place.getName() + ","+place.getRating()+","+place.getAddress()+","+place.isOpen()+","+place.getTypes());
@@ -191,6 +186,8 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
                         loadingPercent +=10;
                         progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
                         Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
+                        counter++;
+                        getPlaceDetails(counter);
                         return;
                     }
                     final PhotoMetadata photoMetadata = metadata.get(0);
@@ -209,24 +206,21 @@ public class ShowNightLifeActivity extends AppCompatActivity implements View.OnC
                             loadingPercent +=10;
                             progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
                             Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
+                            counter++;
+                            getPlaceDetails(counter);
                         }else{
-
-                            if(locationAttractions != null) {
-                                Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
-                                    @Override
-                                    public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
-                                        Double temp1 = locationAttraction.rating / locationAttraction.distanceFromCurrentPlace;
-                                        Double temp2 = t1.rating / t1.distanceFromCurrentPlace;
-                                        return temp1.compareTo(temp2);
-                                    }
-                                });
-                                Collections.reverse(locationAttractions);
-                                LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowNightLifeActivity.this);
-                                lv_locations.setAdapter(locationAttractionAdapter);
-                                progressLoadingAttractions.dismiss();
-                            }else{
-                                Toast.makeText(ShowNightLifeActivity.this, "There was a problem loading your locations... please try again and check your wifi..", Toast.LENGTH_SHORT).show();
-                            }
+                            Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
+                                @Override
+                                public int compare(LocationAttraction locationAttraction, LocationAttraction t1) {
+                                    Double temp1 = locationAttraction.rating / locationAttraction.distanceFromCurrentPlace;
+                                    Double temp2 = t1.rating / t1.distanceFromCurrentPlace;
+                                    return temp1.compareTo(temp2);
+                                }
+                            });
+                            Collections.reverse(locationAttractions);
+                            LocationAttractionAdapter locationAttractionAdapter = new LocationAttractionAdapter(locationAttractions, ShowNightLifeActivity.this);
+                            lv_locations.setAdapter(locationAttractionAdapter);
+                            progressLoadingAttractions.dismiss();
                         }
 
                     }).addOnFailureListener((exception) -> {

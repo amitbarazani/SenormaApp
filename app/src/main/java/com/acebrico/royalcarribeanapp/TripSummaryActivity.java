@@ -45,6 +45,8 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
     Button btn_save;
 
     ArrayList<LocationAttraction> chosenAttractions;
+    //
+    ArrayList<LocationAttraction> findClosestToLastSightArray;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,20 +64,11 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         chosenAttractions = new ArrayList<>();
 
         Log.d("TAG", TemporaryVariables.tostring());
-        if(TemporaryVariables.chosenNightLifeAttractions.size() > 0)
-        {
-            sortAttractions(TemporaryVariables.chosenNightLifeAttractions);
-            updateDistances(TemporaryVariables.chosenNightLifeAttractions);
-            TemporaryVariables.chosenNightLifeAttractions.forEach(new Consumer<LocationAttraction>() {
-                @Override
-                public void accept(LocationAttraction locationAttraction) {
-                    chosenAttractions.add(locationAttraction);
-                }
-            });
-        }
         if(TemporaryVariables.chosenSightSeeingAttractions.size() > 0){
-            sortAttractions(TemporaryVariables.chosenSightSeeingAttractions);
-            updateDistances(TemporaryVariables.chosenSightSeeingAttractions);
+            TemporaryVariables.chosenSightSeeingAttractions = sortAttractions(TemporaryVariables.chosenSightSeeingAttractions);
+            TemporaryVariables.chosenSightSeeingAttractions = updateDistances(TemporaryVariables.chosenSightSeeingAttractions);
+            Log.d("TAG", "sight locations size:"+TemporaryVariables.chosenSightSeeingAttractions.size());
+
             TemporaryVariables.chosenSightSeeingAttractions.forEach(new Consumer<LocationAttraction>() {
                 @Override
                 public void accept(LocationAttraction locationAttraction) {
@@ -83,8 +76,36 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
                 }
             });
         }
+        if(TemporaryVariables.chosenNightLifeAttractions.size() > 0)
+        {
+            TemporaryVariables.chosenNightLifeAttractions = sortAttractions(TemporaryVariables.chosenNightLifeAttractions);
+            if(TemporaryVariables.chosenSightSeeingAttractions.size()>0)
+            {
+                findClosestToLastSightArray = new ArrayList<>();
+                findClosestToLastSightArray.add(TemporaryVariables.chosenSightSeeingAttractions.get(TemporaryVariables.chosenSightSeeingAttractions.size()-1));
+                TemporaryVariables.chosenNightLifeAttractions.forEach(new Consumer<LocationAttraction>() {
+                    @Override
+                    public void accept(LocationAttraction locationAttraction) {
+                        findClosestToLastSightArray.add(locationAttraction);
+                    }
+                });
+                findClosestToLastSightArray = updateDistances(findClosestToLastSightArray);
+                findClosestToLastSightArray.remove(0);
+                TemporaryVariables.chosenNightLifeAttractions = findClosestToLastSightArray;
+            }else{
+                TemporaryVariables.chosenNightLifeAttractions = updateDistances(TemporaryVariables.chosenNightLifeAttractions);
+            }
+            TemporaryVariables.chosenNightLifeAttractions.forEach(new Consumer<LocationAttraction>() {
+                @Override
+                public void accept(LocationAttraction locationAttraction) {
+                    chosenAttractions.add(locationAttraction);
+                }
+            });
+        }
 
 
+
+        Log.d("TAG", "locations size:"+chosenAttractions.size());
         if(TemporaryVariables.isRestaurantsChosen)
         {
             ProgressDialog progressDialog = new ProgressDialog(TripSummaryActivity.this);
@@ -157,7 +178,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         btn_save.setOnClickListener(this);
 
     }
-    public void sortAttractions(ArrayList<LocationAttraction> locations)
+    public ArrayList<LocationAttraction> sortAttractions(ArrayList<LocationAttraction> locations)
     {
 
         Collections.sort(locations, new Comparator<LocationAttraction>() {
@@ -171,11 +192,12 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
 
         Log.d("TAG", "locations now:"+locations.toString());
 
+        return locations;
         //Collections.reverse(TemporaryVariables.chosenAttractions);
     }
 
 
-    public void updateDistances(ArrayList<LocationAttraction> locations)
+    public ArrayList<LocationAttraction> updateDistances(ArrayList<LocationAttraction> locations)
     {
 
         if (locations.size() == 2) {
@@ -201,6 +223,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
         }else if(locations.size() == 4){
             locations = sortByDistance(locations.get(0)
                     ,locations,new ArrayList<>());
+            Log.d("TAG", "updated locations 2:"+locations.size());
         }
 
         String distanceFromLastLocation = distance(
@@ -209,6 +232,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
                 locations.get(locations.size() - 1).lng) + "";
         tv_distanceToEndPoint.setText("Distance:"+distanceFromLastLocation.substring(0,4) +"KM");
 
+        return locations;
     }
 
 
@@ -223,6 +247,7 @@ public class TripSummaryActivity extends AppCompatActivity implements View.OnCli
             LocationAttraction tempAttraction1 = locations.get(0);
             updatedLocations.add(tempAttraction1);
             locations.remove(0);
+            Log.d("TAG", "updated locations:"+updatedLocations);
             return updatedLocations;
         }
         if(updatedLocations.size() == 0)
