@@ -249,6 +249,7 @@ public class ProfileClientActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onStop() {
         db.getReference("Reservations/").orderByChild("idClient").equalTo(user.idNumber).removeEventListener(reservationListener);
+        finish();
         super.onStop();
     }
 }

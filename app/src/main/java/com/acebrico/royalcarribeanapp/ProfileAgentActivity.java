@@ -246,6 +246,7 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onStop() {
         db.getReference("Reservations/").orderByChild("IDAgent").equalTo(user.idNumber).removeEventListener(reservationListener);
+        finish();
         super.onStop();
     }
 }

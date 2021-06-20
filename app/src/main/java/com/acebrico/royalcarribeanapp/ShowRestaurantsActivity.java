@@ -343,7 +343,7 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
 
         for (int i = 0; i < itemscount; i++) {
 
-            View childView      = adapter.getView(i, null, listview);
+            View childView = adapter.getView(i, null, listview);
 
             childView.measure(MeasureSpec.makeMeasureSpec(listview.getWidth(), MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
