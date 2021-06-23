@@ -100,12 +100,20 @@
         android:layout_height="match_parent"
         android:visibility="visible"
         >
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search for a person..."
+
+            />
         <TextView
             android:id="@+id/tv_messages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Messages"
             android:textColor="@android:color/black"
+            android:layout_below="@id/et_search"
             android:layout_centerHorizontal="true"
             />
         <ListView

@@ -13,7 +13,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -44,6 +47,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class ChatAgentActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private final int PICK_IMAGE_REQUEST = 22;
@@ -53,7 +57,7 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
     ImageView img_royalcarribean,img_profilePic,img_backToPickScreen;
     RelativeLayout rl_chatScreen,rl_pickScreen;
     Button btn_sendMessage,btn_changePic;
-    EditText et_message;
+    EditText et_message,et_search;
     ListView lv_pickChat,lv_chat;
     TextView tv_name,tv_talkingWith,tv_picFilename;
     //
@@ -82,6 +86,7 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
         tv_name = findViewById(R.id.tv_name);
         tv_talkingWith = findViewById(R.id.tv_talkingWith);
         tv_picFilename = findViewById(R.id.tv_picFilename);
+        et_search = findViewById(R.id.et_search);
         //
         mAuth = FirebaseAuth.getInstance();
         currentUserAuth = mAuth.getCurrentUser();
@@ -117,6 +122,38 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
         img_profilePic.setOnClickListener(this);
         img_royalcarribean.setOnClickListener(this);
         img_backToPickScreen.setOnClickListener(this);
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                loadPickChatsFromArray(users);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(users.size()!=0) {
+                    if (!et_search.getText().toString().equals("")) {
+                        ArrayList<User> filteredUsers = (ArrayList<User>) users.stream().filter(user -> user.fullName.contains(et_search.getText().toString())).collect(Collectors.toList());
+                        loadPickChatsFromArray(filteredUsers);
+                    } else {
+                        loadPickChatsFromArray(users);
+                    }
+                }else{
+                    loadPickChatsFromArray(users);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        et_search.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+                return false;
+            }
+        });
 
 
     }
@@ -156,6 +193,16 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
             });
         } catch (IOException e ) {}
 
+    }
+
+
+
+
+    private void loadPickChatsFromArray(ArrayList<User> data)
+    {
+        PickChatAdapter pickChatAdapter = new PickChatAdapter(data,ChatAgentActivity.this);
+        lv_pickChat.setAdapter(pickChatAdapter);
+        lv_pickChat.setOnItemClickListener(ChatAgentActivity.this);
     }
 
     ProgressDialog progressPictureAndChats;
