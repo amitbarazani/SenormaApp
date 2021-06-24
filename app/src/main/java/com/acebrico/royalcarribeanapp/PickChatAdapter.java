@@ -52,12 +52,18 @@ public class PickChatAdapter extends ArrayAdapter<User>
 
         TextView tv_name = (TextView)convertView.findViewById(R.id.tv_name);
         ImageView img_isOnline = (ImageView) convertView.findViewById(R.id.img_isOnline);
-        tv_name.setText(user.fullName);
-        if(user.Online.equals("Yes"))
-        {
-            img_isOnline.setImageResource(R.drawable.green_circle);
+        if(user.role.equals("Agent")) {
+            tv_name.setText(user.fullName + " Agent");
         }else{
-            img_isOnline.setImageResource(R.drawable.red_circle);
+            tv_name.setText(user.fullName);
+        }
+
+        if(user.Online != null) {
+            if (user.Online.equals("Yes")) {
+                img_isOnline.setImageResource(R.drawable.green_circle);
+            } else {
+                img_isOnline.setImageResource(R.drawable.red_circle);
+            }
         }
         viewGroup = parent;
 

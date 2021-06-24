@@ -132,7 +132,7 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(users.size()!=0) {
                     if (!et_search.getText().toString().equals("")) {
-                        ArrayList<User> filteredUsers = (ArrayList<User>) users.stream().filter(user -> user.fullName.contains(et_search.getText().toString())).collect(Collectors.toList());
+                        ArrayList<User> filteredUsers = (ArrayList<User>) users.stream().filter(user -> user.fullName.toLowerCase().contains(et_search.getText().toString().toLowerCase())).collect(Collectors.toList());
                         loadPickChatsFromArray(filteredUsers);
                     } else {
                         loadPickChatsFromArray(users);
