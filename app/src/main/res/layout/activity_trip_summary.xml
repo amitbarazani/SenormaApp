@@ -37,9 +37,8 @@
     <ListView
         android:id="@+id/lv_locations"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tv_startingPointText"
-        android:layout_above="@id/tv_endPoint"
         />
     <TextView
         android:id="@+id/tv_endPoint"
@@ -48,7 +47,7 @@
         android:text="End Point..."
         android:layout_centerHorizontal="true"
         android:textColor="@android:color/black"
-        android:layout_above="@id/tv_distanceToEndPoint"
+        android:layout_below="@id/lv_locations"
         android:textSize="12sp"
         android:textStyle="bold"
         />
@@ -59,7 +58,7 @@
         android:text="Distance:..."
         android:layout_centerHorizontal="true"
         android:textColor="@android:color/black"
-        android:layout_above="@id/btn_save"
+        android:layout_below="@+id/tv_endPoint"
         android:textSize="12sp"
         android:layout_marginTop="10dp"
         android:textStyle="bold"

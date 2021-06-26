@@ -75,11 +75,13 @@ public class MessagesAdapter extends ArrayAdapter<Message>
         ImageView img_profilePic = (ImageView) convertView.findViewById(R.id.img_profilePic);
 
         tv_senderName.setText(message.user.name);
-        if(this.currentUserName.equals(message.user.name))
-        {
-            img_profilePic.setImageBitmap(imageCurrentUser);
-        }else{
-            img_profilePic.setImageBitmap(imageOtherUser);
+
+        if (this.currentUserName.equals(message.user.name)) {
+            if(imageCurrentUser!= null)
+                img_profilePic.setImageBitmap(imageCurrentUser);
+        } else {
+            if(imageOtherUser!= null)
+                img_profilePic.setImageBitmap(imageOtherUser);
         }
         tv_content.setText(message.content);
         tv_timestamp.setText(message.timestamp);
@@ -92,67 +94,7 @@ public class MessagesAdapter extends ArrayAdapter<Message>
 
 
 
-    private void loadPicture(final ImageView img_profilePic, final String avatar)
-    {
 
-
-        /*
-
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try  {
-                    try {
-                        java.net.URL url = new java.net.URL(avatar);
-                        HttpURLConnection connection = (HttpURLConnection) url
-                                .openConnection();
-                        connection.setDoInput(true);
-                        connection.connect();
-                        InputStream input = connection.getInputStream();
-                        Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                        img_profilePic.setImageBitmap(myBitmap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.d("ERRORRRRR", "error loaded picture");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-
-         */
-
-/*
-
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://senorma-64974.appspot.com").child("images/").child(id+".jpg");
-        try {
-            final File localFile = File.createTempFile("images", "jpg");
-            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    img_profilePic.setImageBitmap(bitmap);
-
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Log.d("TAG", "onFailure:"+exception);
-                }
-            });
-        } catch (IOException e ) {}
-
-
-
- */
-    }
 
 
 

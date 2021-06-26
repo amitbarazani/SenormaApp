@@ -133,10 +133,13 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
 
 
         loadingPercent = 0;
-        getPlaceDetails(counter);
+        for (int i = 0; i < locationAttractions.size(); i++) {
+            getPlaceDetails(i);
+        }
 
 
     }
+
 
     Integer counter = 0;
     public void getPlaceDetails(Integer i) {
@@ -195,8 +198,6 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
                         loadingPercent +=10;
                         progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
                         Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
-                        counter++;
-                        getPlaceDetails(counter);
                         return;
                     }
                     final PhotoMetadata photoMetadata = metadata.get(0);
@@ -210,13 +211,13 @@ public class ShowRestaurantsActivity extends AppCompatActivity implements View.O
                         locationAttractions.get(i).pictureBitmap = pictureBitmap;
                         Log.d("TAG", "location attraction:"+locationAttractions.get(i).toString());
 
-                        if(i != locationAttractions.size()-1)
+                        if(counter != locationAttractions.size() - 1)
                         {
                             loadingPercent +=10;
+                            counter++;
                             progressLoadingAttractions.setTitle("Loaded "+loadingPercent+"%");
                             Log.d("TAG", "loaded attraction:"+locationAttractions.get(i).toString());
-                            counter++;
-                            getPlaceDetails(counter);
+
                         }else{
                             Collections.sort(locationAttractions, new Comparator<LocationAttraction>() {
                                 @Override
