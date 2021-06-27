@@ -231,7 +231,10 @@ public class ChatAgentActivity extends AppCompatActivity implements View.OnClick
                             {
                                 for (DataSnapshot dataSnapshot: task.getResult().getChildren()) {
                                     if(dataSnapshot.exists()) {
-                                        users.add(dataSnapshot.getValue(User.class));
+                                        if(!dataSnapshot.getValue(User.class).fullName.equals(currentUser.fullName))
+                                        {
+                                            users.add(dataSnapshot.getValue(User.class));
+                                        }
                                     }
                                 }
                                 PickChatAdapter pickChatAdapter = new PickChatAdapter(users,ChatAgentActivity.this);

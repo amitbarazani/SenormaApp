@@ -33,7 +33,7 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
     //views
     ProgressBar prg_profileAgent;
     ImageView img_royalcarribean;
-    TextView tv_name,tv_email,tv_id;
+    TextView tv_name,tv_email,tv_id,tv_customers_text;
     TableLayout tbl_reservations;
     //firebase
     FirebaseAuth mAuth;
@@ -53,11 +53,13 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
         tv_email = findViewById(R.id.tv_email);
         tv_name = findViewById(R.id.tv_name);
         tv_id = findViewById(R.id.tv_id);
+        tv_customers_text = findViewById(R.id.tv_customers_text);
         //
         tv_email.setVisibility(View.GONE);
         tv_name.setVisibility(View.GONE);
         tv_id.setVisibility(View.GONE);
         tbl_reservations.setVisibility(View.GONE);
+        tv_customers_text.setVisibility(View.GONE);
         //
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -79,6 +81,7 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
                     tv_id.setVisibility(View.VISIBLE);
                     tv_name.setVisibility(View.VISIBLE);
                     tbl_reservations.setVisibility(View.GONE);
+                    tv_customers_text.setVisibility(View.GONE);
                 }
             }
         },4000);
@@ -103,6 +106,7 @@ public class ProfileAgentActivity extends AppCompatActivity implements View.OnCl
                 tv_id.setVisibility(View.VISIBLE);
                 tv_name.setVisibility(View.VISIBLE);
                 tbl_reservations.setVisibility(View.VISIBLE);
+                tv_customers_text.setVisibility(View.VISIBLE);
                 showReservation(snapshot);
             }else{
                 Log.d("TAG", "test:"+snapshot);

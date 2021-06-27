@@ -51,7 +51,6 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
             if(! (et_fullname.getText().toString().equals("") ||  et_email.getText().toString().equals("") || et_subject.getText().toString().equals(""))) {
                 if (EmailValidator.getInstance().isValid(et_email.getText().toString())) {
                     String to = "senoramasenorama@gmail.com";
-                     to = "o4255542@gmail.com";
                     String from = et_email.getText().toString();
                     String subject = et_subject.getText().toString();
                     String name = et_fullname.getText().toString();
