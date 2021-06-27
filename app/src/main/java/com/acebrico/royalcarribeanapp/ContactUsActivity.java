@@ -8,6 +8,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.util.*;
+import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.internet.*;
+import javax.activation.*;
+
+import org.apache.commons.validator.routines.EmailValidator;
 
 public class ContactUsActivity extends AppCompatActivity implements View.OnClickListener {
     //views
@@ -39,6 +48,30 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
             startActivity(intent);
         }else if(view == btn_send){
 
+            if(! (et_fullname.getText().toString().equals("") ||  et_email.getText().toString().equals("") || et_subject.getText().toString().equals(""))) {
+                if (EmailValidator.getInstance().isValid(et_email.getText().toString())) {
+                    String to = "senoramasenorama@gmail.com";
+                     to = "o4255542@gmail.com";
+                    String from = et_email.getText().toString();
+                    String subject = et_subject.getText().toString();
+                    String name = et_fullname.getText().toString();
+
+                    Intent intent=new Intent(Intent.ACTION_SEND);
+                    String[] recipients={to};
+                    intent.putExtra(Intent.EXTRA_EMAIL, recipients);
+                    intent.putExtra(Intent.EXTRA_SUBJECT,"contact form from "+name);
+                    intent.putExtra(Intent.EXTRA_TEXT,subject + "\n" + "sent from:"+from);
+                    intent.setType("text/html");
+                    startActivity(Intent.createChooser(intent, "Send mail"));
+
+            }else{
+                    Toast.makeText(this, "email not valid...", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(this, "one or more of the fields is empty", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
+    
 }

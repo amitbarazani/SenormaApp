@@ -46,6 +46,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
     implementation "com.amadeus:amadeus-java:5.7.2"
     implementation 'com.google.android.libraries.places:places:2.4.0'
+    implementation 'javax.mail:mail:1.4.7'
+
 
 
 

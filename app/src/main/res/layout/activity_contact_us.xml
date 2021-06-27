@@ -62,7 +62,7 @@
         />
     <EditText
         android:id="@+id/et_email"
-        android:layout_width="@android:dimen/thumbnail_height"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_above="@+id/tv_subject"
@@ -83,7 +83,7 @@
     <EditText
         android:id="@+id/et_subject"
         android:layout_below="@+id/tv_subject"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:hint="Subject"
